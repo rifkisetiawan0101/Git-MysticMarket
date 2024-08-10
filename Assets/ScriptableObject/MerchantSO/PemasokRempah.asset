@@ -16,7 +16,7 @@ MonoBehaviour:
   merchantPrice: 1250
   merchantPrefab: {fileID: 6755134844048657396, guid: aa57c5bf112a9ea4d99826eecf7eb9b1, type: 3}
   merchantConstructionPrefab: {fileID: 6755134844048657396, guid: 3421bcaef28f5ac42863ba57d987bb97, type: 3}
-  spriteButton: {fileID: 21300000, guid: b4cdc1e30febfe44888978dd09c74dbb, type: 3}
-  selectedSpriteButton: {fileID: 21300000, guid: 222b2ad36e76a2d439e25056b98cdf51, type: 3}
-  merchantWindow: {fileID: 21300000, guid: 34a1aa2338422e64ead46cc17680940f, type: 3}
-  cursorPrefab: {fileID: 8936220965614786974, guid: 263b8b8ee47bc474995f05e48eeef304, type: 3}
+  merchantButton: {fileID: 21300000, guid: 24a3b72ae6b9fc84abb10ffa8b8963ab, type: 3}
+  selectedMerchantButton: {fileID: 21300000, guid: dda9cb65e0804ad488c61d4bbad79ebf, type: 3}
+  merchantWindow: {fileID: 21300000, guid: bfbf14616cd47ef41b5c338c69514e85, type: 3}
+  merchantCursor: {fileID: 8936220965614786974, guid: 263b8b8ee47bc474995f05e48eeef304, type: 3}

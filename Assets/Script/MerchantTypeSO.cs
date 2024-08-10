@@ -8,8 +8,8 @@ public class MerchantTypeSO : ScriptableObject {
     public float merchantPrice;
     public Transform merchantPrefab;
     public Transform merchantConstructionPrefab;
-    public Sprite spriteButton;
-    public Sprite selectedSpriteButton;
+    public Sprite merchantButton;
+    public Sprite selectedMerchantButton;
     public Sprite merchantWindow;
-    public GameObject cursorPrefab;
+    public GameObject merchantCursor;
 }

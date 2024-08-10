@@ -4,21 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MerchantSelectUI : MonoBehaviour {
-    public List<MerchantTypeSO> merchantTypeSOList;
-    public MerchantTypeSO GetThirdMerchant() {
-        return merchantTypeSOList[2];
-    }
-
+    [SerializeField] private List<MerchantTypeSO> merchantTypeSOList;
     [SerializeField] private List<MerchantTerkunciSO> merchantTerkunciSOList;
     [SerializeField] private MerchantManager merchantManager;
-    [SerializeField] private Transform player; // Referensi ke player object
-    [SerializeField] private Vector2 targetPosition; // Posisi target saat player bergerak
-    [SerializeField] private float smoothingSpeed; // Kecepatan smoothing
-
+    
     private List<Transform> merchantButtonList;
     private List<Transform> merchantBtnTerkunciList;
-    private Vector2 initialPosition; // Posisi awal UI element
-    private bool isMoving = false; // Status player bergerak
     private RectTransform rectTransform;
     private GameObject cursorInstance; // Instance dari prefab kursor
 
@@ -39,15 +30,15 @@ public class MerchantSelectUI : MonoBehaviour {
             merchantBtnTransform.gameObject.SetActive(true);
 
             merchantBtnTransform.GetComponent<RectTransform>().anchoredPosition += new Vector2(index * 130, 0);
-            merchantBtnTransform.Find("Image").GetComponent<Image>().sprite = merchantTypeSO.spriteButton;
+            merchantBtnTransform.Find("Image").GetComponent<Image>().sprite = merchantTypeSO.merchantButton;
 
             merchantBtnTransform.GetComponent<Button>().onClick.AddListener(() => {
                 if (merchantManager.GetActiveMerchantType() == merchantTypeSO) {
                     merchantManager.SetActiveMerchantType(null);
-                    DestroyCursorInstance(); // Hapus kursor jika merchantTypeSO diaktifkan/dinonaktifkan
+                    DestroyCursorMerchant(); // Hapus kursor jika merchantTypeSO diaktifkan/dinonaktifkan
                 } else {
                     merchantManager.SetActiveMerchantType(merchantTypeSO);
-                    SetCursor(merchantTypeSO.cursorPrefab); // Atur kursor saat merchant dipilih
+                    SetCursor(merchantTypeSO.merchantCursor); // Atur kursor saat merchant dipilih
                 }
                 UpdateSelectedVisual();
             });
@@ -61,7 +52,7 @@ public class MerchantSelectUI : MonoBehaviour {
             merchantBtnTransformTerkunci.gameObject.SetActive(true);
 
             merchantBtnTransformTerkunci.GetComponent<RectTransform>().anchoredPosition += new Vector2(indexTerkunci * 130, 0);
-            merchantBtnTransformTerkunci.Find("Image").GetComponent<Image>().sprite = merchantTerkunciSO.spriteButton;
+            merchantBtnTransformTerkunci.Find("Image").GetComponent<Image>().sprite = merchantTerkunciSO.merchantTerkunciButton;
             merchantBtnTerkunciList.Add(merchantBtnTransformTerkunci);
 
             indexTerkunci++;
@@ -71,35 +62,24 @@ public class MerchantSelectUI : MonoBehaviour {
     }
 
     private void Start() {
+        merchantManager.OnMerchantPlaced += HandleMerchantPlaced;
+
+        Button buttonHiasan = GameObject.Find("ButtonHiasan").GetComponent<Button>(); 
+        buttonHiasan.onClick.AddListener(() => {
+            merchantManager.SetActiveMerchantType(null); // Set activeMerchantType ke null
+            DestroyCursorMerchant(); // Hapus kursor
+            UpdateSelectedVisual(); // Update visual untuk memastikan tidak ada yang selected
+        });
+        
         UpdateSelectedVisual();
-        if (rectTransform != null) {
-            initialPosition = rectTransform.anchoredPosition; // Simpan posisi awal UI element
-        }
     }
 
     private void Update() {
-        // Deteksi pergerakan player (sesuaikan sesuai dengan cara kamu mendeteksi pergerakan player)
-        if (player != null && (player.GetComponent<Rigidbody2D>().velocity.magnitude > 0)) {
-            isMoving = true;
-        }
-        else {
-            isMoving = false;
-        }
-        // Pindahkan UI element dengan smoothing berdasarkan status pergerakan player
-        if (isMoving) {
-            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPosition, smoothingSpeed * Time.deltaTime);
-        }
-        else {
-            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, initialPosition, smoothingSpeed * Time.deltaTime);
-        }
-
         if (cursorInstance != null) {
             Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             cursorPosition.z = 0;
             cursorInstance.transform.position = cursorPosition;
         }
-
-        merchantManager.OnMerchantPlaced += HandleMerchantPlaced;
     }
 
     private void HandleMerchantPlaced() {
@@ -118,10 +98,10 @@ public class MerchantSelectUI : MonoBehaviour {
             GameObject selected = merchantBtnTransform.Find("Selected").gameObject;
             GameObject merchantWindow = merchantBtnTransform.Find("MerchantWindow").gameObject;
 
-            if (activeMerchantType != null && image.sprite == activeMerchantType.spriteButton) {
+            if (activeMerchantType != null && image.sprite == activeMerchantType.merchantButton) {
                 image.gameObject.SetActive(false);
                 selected.SetActive(true);
-                selected.GetComponent<Image>().sprite = activeMerchantType.selectedSpriteButton;
+                selected.GetComponent<Image>().sprite = activeMerchantType.selectedMerchantButton;
                 merchantWindow.SetActive(true);
                 merchantWindow.GetComponent<Image>().sprite = activeMerchantType.merchantWindow;
             } else {
@@ -132,17 +112,17 @@ public class MerchantSelectUI : MonoBehaviour {
         }
     }
 
-    private void SetCursor(GameObject cursorPrefab) {
+    private void SetCursor(GameObject merchantCursor) {
         if (cursorInstance != null) {
             Destroy(cursorInstance);
         }
 
-        if (cursorPrefab != null) {
-            cursorInstance = Instantiate(cursorPrefab);
+        if (merchantCursor != null) {
+            cursorInstance = Instantiate(merchantCursor);
         }
     }
 
-    public void DestroyCursorInstance() {
+    public void DestroyCursorMerchant() {
         if (cursorInstance != null) {
             Destroy(cursorInstance);
         }

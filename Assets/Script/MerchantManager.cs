@@ -38,8 +38,7 @@ public class MerchantManager : MonoBehaviour {
     }
 
     private void Start() {
-        merchantSelectUI = FindObjectOfType<MerchantSelectUI>();
-
+        
     }
     public event Action OnMerchantPlaced;
 
@@ -54,9 +53,10 @@ public class MerchantManager : MonoBehaviour {
                 
                 SetActiveMerchantType(null); // Reset activeMerchantType setelah menaruh merchant
                 OnMerchantPlaced?.Invoke(); // Panggil event ketika merchant ditempatkan
-                merchantSelectUI.DestroyCursorInstance(); // Hapus kursor setelah merchant ditempatkan
+                merchantSelectUI.DestroyCursorMerchant(); // Hapus kursor setelah merchant ditempatkan
             }
         }
+        merchantSelectUI = FindObjectOfType<MerchantSelectUI>();
     }
 
     public void SetActiveMerchantType(MerchantTypeSO merchantTypeSO) {

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Koin : MonoBehaviour {
     public static Koin koin; 
 
-    public float koins = 1000;
+    public float koins = 100000;
     public Text koinUI;
 
     private void Awake() {
