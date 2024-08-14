@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class NPCSpawner : MonoBehaviour {
     public GameObject npcPrefabs;
-    public float spawnTime;
+    public float minSpawnTime = 3f; // Waktu spawn minimum
+    public float maxSpawnTime = 7f; // Waktu spawn maksimum
+    public MerchantManager merchantManager; // Reference ke MerchantManager untuk akses targetMerchantNPCList
 
     private void Start() {
-        StartCoroutine(spawnNPC());
+        StartCoroutine(SpawnNPC());
     }
 
-    IEnumerator spawnNPC() {
+    IEnumerator SpawnNPC() {
+        float spawnTime = Random.Range(minSpawnTime, maxSpawnTime); // Tentukan waktu spawn secara random
         yield return new WaitForSeconds(spawnTime);
-        Instantiate(npcPrefabs, transform.position, Quaternion.identity);
-        StartCoroutine(spawnNPC());
-    }
 
+        GameObject npc = Instantiate(npcPrefabs, transform.position, Quaternion.identity);
+        NpcAI npcAI = npc.GetComponent<NpcAI>();
+        npcAI.SetupNPC(merchantManager); // Kirim referensi MerchantManager ke NPC
+
+        StartCoroutine(SpawnNPC()); // Spawn NPC berikutnya setelah interval
+    }
 }

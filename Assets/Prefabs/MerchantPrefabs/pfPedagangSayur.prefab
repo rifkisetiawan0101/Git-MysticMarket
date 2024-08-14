@@ -131,9 +131,9 @@ GameObject:
   - component: {fileID: 6384518165722326447}
   - component: {fileID: 297275977261591082}
   - component: {fileID: 4498818553285614164}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: pfPedagangSayur
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

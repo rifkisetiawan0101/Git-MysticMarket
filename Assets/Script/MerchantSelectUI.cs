@@ -11,7 +11,7 @@ public class MerchantSelectUI : MonoBehaviour {
     private List<Transform> merchantButtonList;
     private List<Transform> merchantBtnTerkunciList;
     private RectTransform rectTransform;
-    private GameObject cursorInstance; // Instance dari prefab kursor
+    public GameObject cursorInstance; // Instance dari prefab kursor
 
     private void Awake() {
         Transform merchantBtnTemplate = transform.Find("MerchantBtnTemplate");
@@ -29,16 +29,20 @@ public class MerchantSelectUI : MonoBehaviour {
             Transform merchantBtnTransform = Instantiate(merchantBtnTemplate, transform);
             merchantBtnTransform.gameObject.SetActive(true);
 
-            merchantBtnTransform.GetComponent<RectTransform>().anchoredPosition += new Vector2(index * 130, 0);
+            merchantBtnTransform.GetComponent<RectTransform>().anchoredPosition += new Vector2(index * 115, 0);
             merchantBtnTransform.Find("Image").GetComponent<Image>().sprite = merchantTypeSO.merchantButton;
 
-            merchantBtnTransform.GetComponent<Button>().onClick.AddListener(() => {
+            merchantBtnTransform.GetComponent<Button>().onClick.AddListener(() => {   
                 if (merchantManager.GetActiveMerchantType() == merchantTypeSO) {
                     merchantManager.SetActiveMerchantType(null);
                     DestroyCursorMerchant(); // Hapus kursor jika merchantTypeSO diaktifkan/dinonaktifkan
+                    StartCoroutine (merchantManager.ActivateIsMerchantPlaced(0.5f));
+                    merchantManager.DestroyPlacementInstance();
                 } else {
                     merchantManager.SetActiveMerchantType(merchantTypeSO);
                     SetCursor(merchantTypeSO.merchantCursor); // Atur kursor saat merchant dipilih
+                    StartCoroutine (merchantManager.DeactivateIsMerchantPlaced(0.5f));
+                    merchantManager.DestroyPlacementInstance();
                 }
                 UpdateSelectedVisual();
             });
@@ -51,7 +55,7 @@ public class MerchantSelectUI : MonoBehaviour {
             Transform merchantBtnTransformTerkunci = Instantiate(merchantBtnTerkunci, transform);
             merchantBtnTransformTerkunci.gameObject.SetActive(true);
 
-            merchantBtnTransformTerkunci.GetComponent<RectTransform>().anchoredPosition += new Vector2(indexTerkunci * 130, 0);
+            merchantBtnTransformTerkunci.GetComponent<RectTransform>().anchoredPosition += new Vector2(indexTerkunci * 115, 0);
             merchantBtnTransformTerkunci.Find("Image").GetComponent<Image>().sprite = merchantTerkunciSO.merchantTerkunciButton;
             merchantBtnTerkunciList.Add(merchantBtnTransformTerkunci);
 
@@ -64,8 +68,15 @@ public class MerchantSelectUI : MonoBehaviour {
     private void Start() {
         merchantManager.OnMerchantPlaced += HandleMerchantPlaced;
 
-        Button buttonHiasan = GameObject.Find("ButtonHiasan").GetComponent<Button>(); 
-        buttonHiasan.onClick.AddListener(() => {
+        Button buttonFurnitur = GameObject.Find("ButtonFurnitur").GetComponent<Button>(); 
+        buttonFurnitur.onClick.AddListener(() => {
+            merchantManager.SetActiveMerchantType(null); // Set activeMerchantType ke null
+            DestroyCursorMerchant(); // Hapus kursor
+            UpdateSelectedVisual(); // Update visual untuk memastikan tidak ada yang selected
+        });
+
+        Button buttonSpesial = GameObject.Find("ButtonSpesial").GetComponent<Button>(); 
+        buttonSpesial.onClick.AddListener(() => {
             merchantManager.SetActiveMerchantType(null); // Set activeMerchantType ke null
             DestroyCursorMerchant(); // Hapus kursor
             UpdateSelectedVisual(); // Update visual untuk memastikan tidak ada yang selected
@@ -80,14 +91,11 @@ public class MerchantSelectUI : MonoBehaviour {
             cursorPosition.z = 0;
             cursorInstance.transform.position = cursorPosition;
         }
+        UpdateSelectedVisual();
     }
 
     private void HandleMerchantPlaced() {
         UpdateSelectedVisual(); // Panggil update visual setelah merchant ditempatkan
-    }
-
-    private void OnDestroy() {
-        merchantManager.OnMerchantPlaced -= HandleMerchantPlaced; // Unregister event listener
     }
 
     private void UpdateSelectedVisual() {

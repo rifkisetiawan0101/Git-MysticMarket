@@ -10,18 +10,15 @@ public class VirtualCameraZoom : MonoBehaviour
     
     private float velocity = 0f;
 
-    void Start()
-    {
-        if (virtualCamera == null)
-        {
+    void Start() {
+        if (virtualCamera == null) {
             virtualCamera = GetComponent<CinemachineVirtualCamera>();
         }
         
         virtualCamera.m_Lens.OrthographicSize = startSize;
     }
 
-    void Update()
-    {
+    void Update() {
         float newSize = Mathf.SmoothDamp(virtualCamera.m_Lens.OrthographicSize, targetSize, ref velocity, smoothTime);
         virtualCamera.m_Lens.OrthographicSize = newSize;
     }

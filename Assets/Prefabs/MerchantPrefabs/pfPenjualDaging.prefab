@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 2039379549796929907}
   - component: {fileID: 8608230176185417915}
   - component: {fileID: 2464280218824102528}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: pfPenjualDaging
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

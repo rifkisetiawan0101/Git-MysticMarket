@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff8041948e4e1604595cd1d22a0ee0b7, type: 3}
+  m_Name: Spesial
+  m_EditorClassIdentifier: 
+  spesialName: 
+  spesialPrice: 1000
+  spesialPrefab: {fileID: 4434975520292696249, guid: f9963b20184be9643ba22d78833f3809, type: 3}
+  spesialConstructionPrefab: {fileID: 4434975520292696249, guid: 2cb2ae660ac857a4d96c9009e46fafaf, type: 3}
+  spesialButton: {fileID: -1006137650, guid: 45a4fed2fb0a8ac4b9322a415444c632, type: 3}
+  selectedSpesialButton: {fileID: 1891541824, guid: 45a4fed2fb0a8ac4b9322a415444c632, type: 3}
+  spesialWindow: {fileID: 21300000, guid: 60022d661fe255b43b966e6501346c77, type: 3}
+  spesialCursor: {fileID: 464543286479159738, guid: 05c564bf098b86441b45c2e5234f364a, type: 3}
+  spesialPlacementPrefab: {fileID: 4434975520292696249, guid: afdd8dff6ca9bc040b137611df1ac6bd, type: 3}

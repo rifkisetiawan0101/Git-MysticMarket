@@ -325,9 +325,9 @@ GameObject:
   - component: {fileID: 6755134844048657396}
   - component: {fileID: 1355294922786929827}
   - component: {fileID: 166604227391612576}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: pfPemasokRempah
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using CodeMonkey.Utils;
+using Unity.Mathematics;
 
 public class MerchantManager : MonoBehaviour {
     [SerializeField] private MerchantTypeSO activeMerchantType;
 
     private MerchantSelectUI merchantSelectUI;
+    private bool isPlacingMerchant = false;
+    public bool isMerchantPlaced = true;
 
     private GridXY<GridObject> grid;
     private int cellSize = 60;
@@ -16,6 +19,7 @@ public class MerchantManager : MonoBehaviour {
         int gridWidth = 6000 / cellSize;
         int gridHeight = 6000 / cellSize;
         grid = new GridXY<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (GridXY<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        targetMerchantNPCList = new List<Vector3>();
     }
 
     public class GridObject {
@@ -37,26 +41,69 @@ public class MerchantManager : MonoBehaviour {
         }
     }
 
-    private void Start() {
-        
-    }
     public event Action OnMerchantPlaced;
-
     private void Update() {
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) {
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && !isPlacingMerchant) {
             Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
             if (CanSpawnMerchant(activeMerchantType, mouseWorldPosition)) {
-                grid.GetXY(mouseWorldPosition, out int x, out int y);
-                Instantiate(activeMerchantType.merchantConstructionPrefab, grid.GetWorldPosition(x, y) + new Vector3(cellSize, cellSize, 0) * 0.5f, Quaternion.identity);
-
-                Koin.koin.updateKoin( - (activeMerchantType.merchantPrice));
-                
-                SetActiveMerchantType(null); // Reset activeMerchantType setelah menaruh merchant
-                OnMerchantPlaced?.Invoke(); // Panggil event ketika merchant ditempatkan
-                merchantSelectUI.DestroyCursorMerchant(); // Hapus kursor setelah merchant ditempatkan
+                PlacementInstance();
             }
         }
         merchantSelectUI = FindObjectOfType<MerchantSelectUI>();
+    }
+
+    private Transform placementInstance;
+
+    private void PlacementInstance() {
+        Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
+        grid.GetXY(mouseWorldPosition, out int x, out int y);
+        Vector3 spawnPosition = grid.GetWorldPosition(x, y) + new Vector3(cellSize, cellSize, 0) * 0.5f;
+        placementInstance = Instantiate(activeMerchantType.merchantPlacementPrefab, spawnPosition, Quaternion.identity);
+
+        // Set status isPlacingMerchant menjadi true setelah memanggil placement
+        isPlacingMerchant = true;
+
+        // Setup merchant placement instance
+        MerchantPlacement merchantPlacement = placementInstance.GetComponent<MerchantPlacement>();
+        merchantPlacement.Setup(spawnPosition, this);
+        merchantSelectUI.DestroyCursorMerchant();
+
+        StartCoroutine (ActivateIsMerchantPlaced (0.5f));
+    }
+
+    public void DestroyPlacementInstance() {
+        if (placementInstance != null) {
+            Destroy(placementInstance.gameObject);
+            placementInstance = null;
+            isPlacingMerchant = false;
+        }
+    }
+
+    public static event Action OnTotalMerchantChanged;
+    public static int totalMerchant = 0;
+    // public bool isHaveMerchant = false;
+    public List<Vector3>targetMerchantNPCList;
+    [SerializeField] GameObject kunchanSpawner;
+    public void MerchantPlacing(Vector3 position) {
+        Instantiate(activeMerchantType.merchantConstructionPrefab, position, Quaternion.identity);
+
+        Koin.koin.updateKoin(-activeMerchantType.merchantPrice);
+        SetActiveMerchantType(null); // Reset activeMerchantType setelah menaruh merchant
+        OnMerchantPlaced?.Invoke(); // Panggil event ketika merchant ditempatkan
+        isPlacingMerchant = false; // Reset status placement
+        totalMerchant += 1;
+        Debug.Log ("Total Merchant " + totalMerchant);
+        OnTotalMerchantChanged?.Invoke();
+
+        targetMerchantNPCList.Add(position);
+        Debug.Log("Posisi merchant ditambahkan: " + position);
+        Debug.Log("Daftar semua posisi merchant: " + string.Join(", ", targetMerchantNPCList));
+        kunchanSpawner.SetActive(true);
+    }
+
+    public void CancelPlacement() {
+        SetActiveMerchantType(null);
+        isPlacingMerchant = false; // Reset status placement jika dibatalkan
     }
 
     public void SetActiveMerchantType(MerchantTypeSO merchantTypeSO) {
@@ -68,7 +115,7 @@ public class MerchantManager : MonoBehaviour {
     }
 
     private bool CanSpawnMerchant(MerchantTypeSO merchantTypeSO, Vector3 position) {
-        if (merchantTypeSO == null) {
+        if (activeMerchantType == null) {
             return false;
         }
 
@@ -83,5 +130,15 @@ public class MerchantManager : MonoBehaviour {
         }
 
         return true;
+    }
+
+    public IEnumerator ActivateIsMerchantPlaced(float delay) {
+        yield return new WaitForSeconds(delay);
+        isMerchantPlaced = true;
+    }
+
+    public IEnumerator DeactivateIsMerchantPlaced(float delay) {
+        yield return new WaitForSeconds(delay);
+        isMerchantPlaced = false;
     }
 }

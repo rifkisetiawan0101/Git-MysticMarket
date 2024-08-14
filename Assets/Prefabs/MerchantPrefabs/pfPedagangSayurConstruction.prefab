@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 297275977261591082}
   - component: {fileID: 4498818553285614164}
   - component: {fileID: -7298363306961601522}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: pfPedagangSayurConstruction
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -143,4 +143,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 694ece9e493329f488b143757df5e228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  merchantPrefab: {fileID: 6384518165722326447, guid: b1b9aaca68aad4d4ca7f8e575e07aa18, type: 3}
+  targetPrefab: {fileID: 6384518165722326447, guid: b1b9aaca68aad4d4ca7f8e575e07aa18, type: 3}
+  timeToConstruct: 5

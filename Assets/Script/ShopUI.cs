@@ -4,77 +4,125 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ShopUI : MonoBehaviour {
-    [SerializeField] private Transform player;
     [SerializeField] private Vector2 targetPosition;
     [SerializeField] private float smoothingSpeed;
 
     private Vector2 initialPosition;
-    private bool isMoving = false;
     private RectTransform rectTransform;
     
     [SerializeField] private GameObject merchantSelectUIObject;
-    [SerializeField] private GameObject hiasanSelectUIObject;
+    [SerializeField] private GameObject furniturSelectUIObject;
+    [SerializeField] private GameObject spesialSelectUIObject;
 
     private MerchantSelectUI merchantSelectUI;
-    private HiasanSelectUI hiasanSelectUI;
+    private FurniturSelectUI furniturSelectUI;
+    private SpesialSelectUI spesialSelectUI;
 
     [SerializeField] private Button buttonMerchant;
-    [SerializeField] private Button buttonHiasan;
+    [SerializeField] private Button buttonFurnitur;
+    [SerializeField] private Button buttonSpesial;
+    [SerializeField] private Button buttonCloseShop;
+    [SerializeField] private Button buttonOpenShop;
 
     [SerializeField] private Sprite merchantSelectedSprite;
     [SerializeField] private Sprite merchantNormalSprite;
-    [SerializeField] private Sprite hiasanSelectedSprite;
-    [SerializeField] private Sprite hiasanNormalSprite;
+    [SerializeField] private Sprite furniturSelectedSprite;
+    [SerializeField] private Sprite furniturNormalSprite;
+    [SerializeField] private Sprite spesialSelectedSprite;
+    [SerializeField] private Sprite spesialNormalSprite;
 
     private void Start() {
         rectTransform = GetComponent<RectTransform>();
-        if (rectTransform != null) {
-            initialPosition = rectTransform.anchoredPosition; 
-        }
+        initialPosition = Vector3.zero; 
 
-        // Ambil komponen MerchantSelectUI dan HiasanSelectUI dari GameObject terkait
+        // Ambil komponen MerchantSelectUI dan FurniturSelectUI dari GameObject terkait
         merchantSelectUI = merchantSelectUIObject.GetComponent<MerchantSelectUI>();
-        hiasanSelectUI = hiasanSelectUIObject.GetComponent<HiasanSelectUI>();
+        furniturSelectUI = furniturSelectUIObject.GetComponent<FurniturSelectUI>();
+        spesialSelectUI = spesialSelectUIObject.GetComponent<SpesialSelectUI>();
 
         ShowMerchantUI();
-        
+
         buttonMerchant.onClick.AddListener(ShowMerchantUI);
-        buttonHiasan.onClick.AddListener(ShowHiasanUI);
+        buttonFurnitur.onClick.AddListener(ShowFurniturUI);
+        buttonSpesial.onClick.AddListener(ShowSpesialUI);
+        buttonCloseShop.onClick.AddListener(CloseShopUI);
+        buttonOpenShop.onClick.AddListener(OpenShopUI);
+
+        UpdateButtonStates();
     }
 
     private void Update() {
-        if (player != null && (player.GetComponent<Rigidbody2D>().velocity.magnitude > 0)) {
-            isMoving = true;
+        if (PlayerMovementNew.isMoving) {
+            CloseShopUI();
         }
-        else {
-            isMoving = false;
-        }
+    }
 
-        if (isMoving) {
-            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPosition, smoothingSpeed * Time.deltaTime);
+    private Coroutine moveCoroutine;
+
+    public void OpenShopUI() {
+        if (moveCoroutine != null) {
+            StopCoroutine(moveCoroutine);
         }
-        else {
-            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, initialPosition, smoothingSpeed * Time.deltaTime);
+        moveCoroutine = StartCoroutine(MoveShopUI(initialPosition));
+    }
+
+    public void CloseShopUI() {
+        if (moveCoroutine != null) {
+            StopCoroutine(moveCoroutine);
         }
+        moveCoroutine = StartCoroutine(MoveShopUI(targetPosition));
+    }
+
+    private IEnumerator MoveShopUI(Vector2 targetPos) {
+        while ((rectTransform.anchoredPosition - targetPos).sqrMagnitude > 0.01f) {
+            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPos, smoothingSpeed * Time.deltaTime);
+            yield return null;
+        }
+        rectTransform.anchoredPosition = targetPos;
+        UpdateButtonStates();
     }
 
     private void ShowMerchantUI() {
         merchantSelectUIObject.SetActive(true);
-        hiasanSelectUIObject.SetActive(false);
+        furniturSelectUIObject.SetActive(false);
+        spesialSelectUIObject.SetActive(false);
         
         buttonMerchant.image.sprite = merchantSelectedSprite;
-        buttonHiasan.image.sprite = hiasanNormalSprite;
+        buttonFurnitur.image.sprite = furniturNormalSprite;
+        buttonSpesial.image.sprite = spesialNormalSprite;
 
-        hiasanSelectUI.DestroyCursorHiasan(); // Panggil method melalui komponen HiasanSelectUI
+        OpenShopUI();
     }
 
-    private void ShowHiasanUI() {
+    private void ShowFurniturUI() {
         merchantSelectUIObject.SetActive(false);
-        hiasanSelectUIObject.SetActive(true);
+        furniturSelectUIObject.SetActive(true);
+        spesialSelectUIObject.SetActive(false);
         
         buttonMerchant.image.sprite = merchantNormalSprite;
-        buttonHiasan.image.sprite = hiasanSelectedSprite;
+        buttonFurnitur.image.sprite = furniturSelectedSprite;
+        buttonSpesial.image.sprite = spesialNormalSprite;
 
-        merchantSelectUI.DestroyCursorMerchant(); // Panggil method melalui komponen MerchantSelectUI
+        OpenShopUI();
+    }
+
+    private void ShowSpesialUI() {
+        merchantSelectUIObject.SetActive(false);
+        furniturSelectUIObject.SetActive(false);
+        spesialSelectUIObject.SetActive(true);
+        
+        buttonMerchant.image.sprite = merchantNormalSprite;
+        buttonFurnitur.image.sprite = furniturNormalSprite;
+        buttonSpesial.image.sprite = spesialSelectedSprite;
+
+        OpenShopUI();
+    }
+
+    private void UpdateButtonStates() {
+        bool isAtTargetPosition = (rectTransform.anchoredPosition - targetPosition).sqrMagnitude < 0.01f;
+        bool isAtInitialPosition = (rectTransform.anchoredPosition - initialPosition).sqrMagnitude < 0.01f;
+
+        buttonOpenShop.gameObject.SetActive(isAtTargetPosition);
+        buttonCloseShop.gameObject.SetActive(isAtInitialPosition);
     }
 }

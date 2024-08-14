@@ -115,10 +115,10 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -134,12 +134,12 @@ TextureImporter:
       name: Rozak_1
       rect:
         serializedVersion: 2
-        x: 156
+        x: 249
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -155,12 +155,12 @@ TextureImporter:
       name: Rozak_2
       rect:
         serializedVersion: 2
-        x: 312
+        x: 498
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -176,12 +176,12 @@ TextureImporter:
       name: Rozak_3
       rect:
         serializedVersion: 2
-        x: 468
+        x: 747
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -197,12 +197,12 @@ TextureImporter:
       name: Rozak_4
       rect:
         serializedVersion: 2
-        x: 624
+        x: 996
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -218,12 +218,12 @@ TextureImporter:
       name: Rozak_5
       rect:
         serializedVersion: 2
-        x: 780
+        x: 1245
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -239,12 +239,12 @@ TextureImporter:
       name: Rozak_6
       rect:
         serializedVersion: 2
-        x: 936
+        x: 1494
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -260,12 +260,12 @@ TextureImporter:
       name: Rozak_7
       rect:
         serializedVersion: 2
-        x: 1092
+        x: 1743
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -281,12 +281,12 @@ TextureImporter:
       name: Rozak_8
       rect:
         serializedVersion: 2
-        x: 1248
+        x: 1992
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -302,12 +302,12 @@ TextureImporter:
       name: Rozak_9
       rect:
         serializedVersion: 2
-        x: 1404
+        x: 2241
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -323,12 +323,12 @@ TextureImporter:
       name: Rozak_10
       rect:
         serializedVersion: 2
-        x: 1560
+        x: 2490
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -344,12 +344,12 @@ TextureImporter:
       name: Rozak_11
       rect:
         serializedVersion: 2
-        x: 1716
+        x: 2739
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -365,12 +365,12 @@ TextureImporter:
       name: Rozak_12
       rect:
         serializedVersion: 2
-        x: 1872
+        x: 2988
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -386,12 +386,12 @@ TextureImporter:
       name: Rozak_13
       rect:
         serializedVersion: 2
-        x: 2028
+        x: 3237
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -407,12 +407,12 @@ TextureImporter:
       name: Rozak_14
       rect:
         serializedVersion: 2
-        x: 2184
+        x: 3486
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -428,12 +428,12 @@ TextureImporter:
       name: Rozak_15
       rect:
         serializedVersion: 2
-        x: 2340
+        x: 3735
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -449,12 +449,12 @@ TextureImporter:
       name: Rozak_16
       rect:
         serializedVersion: 2
-        x: 2496
+        x: 3984
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -470,12 +470,12 @@ TextureImporter:
       name: Rozak_17
       rect:
         serializedVersion: 2
-        x: 2652
+        x: 4233
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -491,12 +491,12 @@ TextureImporter:
       name: Rozak_18
       rect:
         serializedVersion: 2
-        x: 2808
+        x: 4482
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -512,12 +512,12 @@ TextureImporter:
       name: Rozak_19
       rect:
         serializedVersion: 2
-        x: 2964
+        x: 4731
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -533,12 +533,12 @@ TextureImporter:
       name: Rozak_20
       rect:
         serializedVersion: 2
-        x: 3120
+        x: 4980
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -554,12 +554,12 @@ TextureImporter:
       name: Rozak_21
       rect:
         serializedVersion: 2
-        x: 3276
+        x: 5229
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -575,12 +575,12 @@ TextureImporter:
       name: Rozak_22
       rect:
         serializedVersion: 2
-        x: 3432
+        x: 5478
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -596,12 +596,12 @@ TextureImporter:
       name: Rozak_23
       rect:
         serializedVersion: 2
-        x: 3588
+        x: 5727
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -617,12 +617,12 @@ TextureImporter:
       name: Rozak_24
       rect:
         serializedVersion: 2
-        x: 3744
+        x: 5976
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -638,12 +638,12 @@ TextureImporter:
       name: Rozak_25
       rect:
         serializedVersion: 2
-        x: 3900
+        x: 6225
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -659,12 +659,12 @@ TextureImporter:
       name: Rozak_26
       rect:
         serializedVersion: 2
-        x: 4056
+        x: 6474
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -680,12 +680,12 @@ TextureImporter:
       name: Rozak_27
       rect:
         serializedVersion: 2
-        x: 4212
+        x: 6723
         y: 0
-        width: 156
-        height: 261
+        width: 249.57143
+        height: 417
       alignment: 9
-      pivot: {x: 0.5, y: 0.13}
+      pivot: {x: 0.5, y: 0.1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

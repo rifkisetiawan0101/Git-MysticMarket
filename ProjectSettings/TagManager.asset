@@ -8,11 +8,12 @@ TagManager:
   - Ayang
   - Kunchan
   - Pocin
+  - Obstacle
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Obstacle
   - Water
   - UI
   - 

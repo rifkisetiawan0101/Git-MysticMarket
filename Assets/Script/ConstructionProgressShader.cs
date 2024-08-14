@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class ConstructionProgressShader : MonoBehaviour {
 
-    [SerializeField] private Transform merchantPrefab;
+    [SerializeField] private Transform targetPrefab;
+    [SerializeField] private float timeToConstruct = 5f;
 
     private float contructionTimer;
     private Material material;
@@ -18,12 +19,11 @@ public class ConstructionProgressShader : MonoBehaviour {
     }
 
     private void Update() {
-        float timeToConstruct = 5f;
         contructionTimer += Time.deltaTime / timeToConstruct;
         material.SetFloat("_Progress", contructionTimer);
 
         if (contructionTimer >= 1f) {
-            Instantiate(merchantPrefab, transform.position, Quaternion.identity);
+            Instantiate(targetPrefab, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
 
