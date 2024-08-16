@@ -95,7 +95,7 @@ Animator:
   m_GameObject: {fileID: 3026035907296044172}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5275dfc9d05b2a44598fc5ac66ca1965, type: 2}
+  m_Controller: {fileID: 9100000, guid: 35fcf5ddb0cd7d74c99b16d3d973936c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 8818509147827410344}
   m_Layer: 0
   m_Name: NpcKunchan
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -135,7 +135,7 @@ Transform:
   m_GameObject: {fileID: 5085982525111228271}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3537, y: 3760, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -257,4 +257,4 @@ MonoBehaviour:
   speed: 40000
   smoothTime: 0.1
   pauseTime: 3
-  randomMoveTime: 10
+  randomMoveTime: 7

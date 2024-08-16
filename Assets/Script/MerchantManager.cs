@@ -5,9 +5,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using CodeMonkey.Utils;
 using Unity.Mathematics;
+using UnityEngine.UI;
+// using System.Diagnostics;
 
 public class MerchantManager : MonoBehaviour {
     [SerializeField] private MerchantTypeSO activeMerchantType;
+    [SerializeField] private LayerMask ignoreLayerMask;
 
     private MerchantSelectUI merchantSelectUI;
     private bool isPlacingMerchant = false;
@@ -84,10 +87,12 @@ public class MerchantManager : MonoBehaviour {
     // public bool isHaveMerchant = false;
     public List<Vector3>targetMerchantNPCList;
     [SerializeField] GameObject kunchanSpawner;
+    [SerializeField] GameObject pocinSpawner;
+    [SerializeField] GameObject ayangSpawner;
     public void MerchantPlacing(Vector3 position) {
         Instantiate(activeMerchantType.merchantConstructionPrefab, position, Quaternion.identity);
 
-        Koin.koin.updateKoin(-activeMerchantType.merchantPrice);
+        PersistentManager.Instance.UpdateKoin(-activeMerchantType.merchantPrice);
         SetActiveMerchantType(null); // Reset activeMerchantType setelah menaruh merchant
         OnMerchantPlaced?.Invoke(); // Panggil event ketika merchant ditempatkan
         isPlacingMerchant = false; // Reset status placement
@@ -98,7 +103,9 @@ public class MerchantManager : MonoBehaviour {
         targetMerchantNPCList.Add(position);
         Debug.Log("Posisi merchant ditambahkan: " + position);
         Debug.Log("Daftar semua posisi merchant: " + string.Join(", ", targetMerchantNPCList));
+        pocinSpawner.SetActive(true);
         kunchanSpawner.SetActive(true);
+        ayangSpawner.SetActive(true);
     }
 
     public void CancelPlacement() {
@@ -119,14 +126,25 @@ public class MerchantManager : MonoBehaviour {
             return false;
         }
 
-        if (Koin.koin.koins < merchantTypeSO.merchantPrice) {
+        if (PersistentManager.Instance.Koins < merchantTypeSO.merchantPrice) {
             return false;
         }
 
-        BoxCollider2D merchantBoxCollider2D = merchantTypeSO.merchantPrefab.GetComponent<BoxCollider2D>();
-        
-        if (Physics2D.OverlapBox(position + (Vector3)merchantBoxCollider2D.offset, merchantBoxCollider2D.size, 0) != null) {
+        PolygonCollider2D merchantCollider = merchantTypeSO.merchantPrefab.GetComponent<PolygonCollider2D>();
+
+        if (merchantCollider == null) {
+            Debug.LogError("PolygonCollider2D tidak ditemukan pada prefab merchant!");
             return false;
+        }
+
+        Vector2[] worldSpacePoints = new Vector2[merchantCollider.points.Length];
+
+        for (int i = 0; i < merchantCollider.points.Length; i++) {
+            worldSpacePoints[i] = (Vector2)position + merchantCollider.points[i];
+        
+            if (Physics2D.OverlapPoint(worldSpacePoints[i], ~ignoreLayerMask) != null) {
+                return false;
+            }
         }
 
         return true;

@@ -1,42 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TriggerRempah : MonoBehaviour {
     float penampungKoinRempah = 0;
-    public GameObject collectCanvas; // Tambahkan ini
-    public GameObject collectButton; // Tambahkan ini
+    float hargaRempah = 200;
+    public GameObject collectButton;
 
     private void Start() {
-        collectCanvas.SetActive(false); // Pastikan CollectCanvas tidak aktif di awal
-        collectButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(OnCollectButtonClick); // Tambahkan event listener
+        collectButton.SetActive(false);
+        collectButton.GetComponent<Button>().onClick.AddListener(OnCollectButtonClick);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Kunchan")) {
-            TambahKoin(250);
+        if (collision.CompareTag("NPC")) {
+            penampungKoinRempah += hargaRempah;
+            Debug.Log("Penampung Koin Rempah bertambah " + penampungKoinRempah);
+            if (penampungKoinRempah >= 750) {
+                collectButton.SetActive(true);
+            }
         }
-    }
-
-    private void TambahKoin(float jumlah) {
-        penampungKoinRempah += jumlah;
-        Debug.Log("Penampung Koin Rempah = " + penampungKoinRempah);
-
-        if (penampungKoinRempah >= 750) {
-            ActiveCollectButton();
-        }
-    }
-
-    private void ActiveCollectButton() {
-        collectCanvas.SetActive(true); // Aktifkan CollectCanvas
-        Debug.Log("CollectCanvas diaktifkan!");
     }
 
     private void OnCollectButtonClick() {
-        Koin.koin.updateKoin(penampungKoinRempah);
+        PersistentManager.Instance.UpdateKoin(penampungKoinRempah);
         Debug.Log("Koin di Setor!");
         penampungKoinRempah = 0;
         Debug.Log("Penampung Koin Rempah Saat Ini = " + penampungKoinRempah);
-        collectCanvas.SetActive(false); // Nonaktifkan CollectCanvas
+        collectButton.SetActive(false);
     }
 }

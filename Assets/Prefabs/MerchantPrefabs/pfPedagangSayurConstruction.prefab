@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6384518165722326447}
   - component: {fileID: 297275977261591082}
-  - component: {fileID: 4498818553285614164}
   - component: {fileID: -7298363306961601522}
   m_Layer: 3
   m_Name: pfPedagangSayurConstruction
@@ -31,7 +30,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8985710902660065602}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &297275977261591082
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2b2da36bfd736374084369be6b1f96f8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a45919d322ca53a4bbec87f6b0bfae72, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -86,13 +86,59 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &4498818553285614164
-BoxCollider2D:
+--- !u!114 &-7298363306961601522
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1728916376516911935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 694ece9e493329f488b143757df5e228, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetPrefab: {fileID: 6384518165722326447, guid: b1b9aaca68aad4d4ca7f8e575e07aa18, type: 3}
+  timeToConstruct: 3
+--- !u!1 &2252652473368541489
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8985710902660065602}
+  - component: {fileID: 2312592074220851199}
+  m_Layer: 3
+  m_Name: ColliderSayur
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8985710902660065602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2252652473368541489}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.2840153, w: 0.95881975}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6384518165722326447}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 33}
+--- !u!60 &2312592074220851199
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2252652473368541489}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -118,30 +164,25 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 8, y: -30}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 359, y: 185}
-    newSize: {x: 3.6, y: 1.85}
-    adaptiveTilingThreshold: 0.5
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 328, y: 115}
-  m_EdgeRadius: 0
---- !u!114 &-7298363306961601522
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1728916376516911935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 694ece9e493329f488b143757df5e228, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetPrefab: {fileID: 6384518165722326447, guid: b1b9aaca68aad4d4ca7f8e575e07aa18, type: 3}
-  timeToConstruct: 5
+  m_Points:
+    m_Paths:
+    - - {x: 625.9698, y: -293.26062}
+      - {x: 616.20013, y: -392.41306}
+      - {x: -263.80676, y: -399.57242}
+      - {x: -485.31378, y: -291.59845}
+      - {x: -559.5359, y: -173.22743}
+      - {x: -668.44214, y: 139.43864}
+      - {x: -581.30975, y: 259.72372}
+      - {x: 371.29993, y: 117.864}
+      - {x: 480.1867, y: -14.654053}
+  m_UseDelaunayMesh: 0

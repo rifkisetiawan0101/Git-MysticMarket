@@ -7,14 +7,11 @@ public class Timer : MonoBehaviour {
     [SerializeField] TextMeshProUGUI timer;
     [SerializeField] InvoiceUI invoiceUI; // Referensi ke script InvoiceUI melalui Inspector
 
-    float elapsedTime;
-    float totalInGameMinutes = 12 * 60; // Total waktu in-game dari 18:00 sampai 06:00 dalam menit
-    float realLifeDuration = 5f * 60; // Durasi 2 menit di real life dalam detik
-    int dayCounter = 1; // Hari ke berapa saat game dimainkan
-
-    private void Start() {
-        UpdateDayText(); // Menampilkan hari pertama di InvoiceUI
-    }
+    private float elapsedTime;
+    private float totalInGameMinutes = 12 * 60; // Total waktu in-game dari 18:00 sampai 06:00 dalam menit
+    private float realLifeDuration = 1.5f * 60; // Durasi 2 menit di real life dalam detik
+    public static int dayCounter = 1; // Hari ke berapa saat game dimainkan
+    public bool invoiceShown = false;
 
     private void Update() {
         elapsedTime += Time.deltaTime;
@@ -35,19 +32,17 @@ public class Timer : MonoBehaviour {
 
         // Jika waktu in-game mencapai 06:00 pagi, hentikan timer dan tampilkan InvoiceUI
         if (hours == 6 && minutes == 0) {
-            invoiceUI.ShowInvoice(Koin.koin.koins, dayCounter); // Menampilkan invoice
-            Time.timeScale = 0; // Hentikan timer (pause game)
+            if (!invoiceShown) {
+                invoiceUI.ShowInvoice();
+                Time.timeScale = 0;
+            }
+            invoiceShown = true;
         }
     }
 
     public void NextDay() {
         dayCounter++;
-        UpdateDayText();
-    }
-
-    private void UpdateDayText() {
-        if (invoiceUI != null) {
-            invoiceUI.UpdateDayText(dayCounter); // Update Day Text di InvoiceUI hanya dengan angka
-        }
+        PlayerPrefs.SetInt("DayCounter", dayCounter); // Simpan nilai ke PlayerPrefs
+        invoiceUI.UpdateDayText();
     }
 }

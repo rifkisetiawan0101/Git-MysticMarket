@@ -1,23 +1,23 @@
-using System;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
-public class Koin : MonoBehaviour {
-    public static Koin koin; 
-
-    public float koins = 100000;
+public class Koin : MonoBehaviour
+{
     public TextMeshProUGUI koinUI;
 
-    private void Awake() {
-        koin = this;
+    private void Update()
+    {
+        UpdateKoinUI();
     }
 
-    public static event Action OnTotalKoinChanged;
-    public void updateKoin(float amount) {
-        koins += amount;
-        koinUI.text = koins.ToString("N0") + "K";
-        Debug.Log ("Koin saat ini " + koins);
-        OnTotalKoinChanged?.Invoke();
+    public void UpdateKoin(float amount)
+    {
+        PersistentManager.Instance.UpdateKoin(amount);  // Update nilai koin di PersistentManager
+        UpdateKoinUI();
+    }
+
+    private void UpdateKoinUI()
+    {
+        koinUI.text = PersistentManager.Instance.Koins.ToString("N0") + "K";  // Menampilkan nilai koin
     }
 }

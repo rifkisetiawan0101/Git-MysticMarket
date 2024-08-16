@@ -1,42 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TriggerDaging : MonoBehaviour {
     float penampungKoinDaging = 0;
-    public GameObject collectCanvas; // Tambahkan ini
-    public GameObject collectButton; // Tambahkan ini
+    float hargaDaging = 500;
+    public GameObject collectButton;
 
     private void Start() {
-        collectCanvas.SetActive(false); // Pastikan CollectCanvas tidak aktif di awal
-        collectButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(OnCollectButtonClick); // Tambahkan event listener
+        collectButton.SetActive(false);
+        collectButton.GetComponent<Button>().onClick.AddListener(OnCollectButtonClick);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Ayang")) {
-            TambahKoin(500);
+        if (collision.CompareTag("NPC")) {
+            penampungKoinDaging += hargaDaging;
+            Debug.Log("Penampung Koin Daging bertambah " + penampungKoinDaging);
+            if (penampungKoinDaging >= 1500) {
+                collectButton.SetActive(true);
+            }
         }
-    }
-
-    private void TambahKoin(float jumlah) {
-        penampungKoinDaging += jumlah;
-        Debug.Log("Penampung Koin Rempah = " + penampungKoinDaging);
-
-        if (penampungKoinDaging >= 1500) {
-            ActiveCollectButton();
-        }
-    }
-
-    private void ActiveCollectButton() {
-        collectCanvas.SetActive(true); // Aktifkan CollectCanvas
-        Debug.Log("CollectCanvas diaktifkan!");
     }
 
     private void OnCollectButtonClick() {
-        Koin.koin.updateKoin(penampungKoinDaging);
+        PersistentManager.Instance.UpdateKoin(penampungKoinDaging);
         Debug.Log("Koin di Setor!");
         penampungKoinDaging = 0;
-        Debug.Log("Penampung Koin Rempah Saat Ini = " + penampungKoinDaging);
-        collectCanvas.SetActive(false); // Nonaktifkan CollectCanvas
+        Debug.Log("Penampung Koin Daging Saat Ini = " + penampungKoinDaging);
+        collectButton.SetActive(false);
     }
 }

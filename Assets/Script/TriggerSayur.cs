@@ -1,42 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TriggerSayur : MonoBehaviour {
     float penampungKoinSayur = 0;
-    public GameObject collectCanvas; // Tambahkan ini
-    public GameObject collectButton; // Tambahkan ini
+    float hargaSayur = 100;
+    public GameObject collectButton;
 
     private void Start() {
-        collectCanvas.SetActive(false); // Pastikan CollectCanvas tidak aktif di awal
-        collectButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(OnCollectButtonClick); // Tambahkan event listener
+        collectButton.SetActive(false);
+        collectButton.GetComponent<Button>().onClick.AddListener(OnCollectButtonClick);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Pocin")) {
-            TambahKoin(100);
+        if (collision.CompareTag("NPC")) {
+            penampungKoinSayur += hargaSayur;
+            Debug.Log("Penampung Koin Sayur bertambah " + penampungKoinSayur);
+            if (penampungKoinSayur >= 300) {
+                collectButton.SetActive(true);
+            }
         }
-    }
-
-    private void TambahKoin(float jumlah) {
-        penampungKoinSayur += jumlah;
-        Debug.Log("Penampung Koin Rempah = " + penampungKoinSayur);
-
-        if (penampungKoinSayur >= 300) {
-            ActiveCollectButton();
-        }
-    }
-
-    private void ActiveCollectButton() {
-        collectCanvas.SetActive(true); // Aktifkan CollectCanvas
-        Debug.Log("CollectCanvas diaktifkan!");
     }
 
     private void OnCollectButtonClick() {
-        Koin.koin.updateKoin(penampungKoinSayur);
+        PersistentManager.Instance.UpdateKoin(penampungKoinSayur);
         Debug.Log("Koin di Setor!");
         penampungKoinSayur = 0;
-        Debug.Log("Penampung Koin Rempah Saat Ini = " + penampungKoinSayur);
-        collectCanvas.SetActive(false); // Nonaktifkan CollectCanvas
+        Debug.Log("Penampung Koin Sayur Saat Ini = " + penampungKoinSayur);
+        collectButton.SetActive(false);
     }
 }

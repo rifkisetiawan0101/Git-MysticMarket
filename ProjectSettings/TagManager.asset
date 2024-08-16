@@ -5,10 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Undefined
-  - Ayang
-  - Kunchan
-  - Pocin
   - Obstacle
+  - NPC
   layers:
   - Default
   - TransparentFX
@@ -16,7 +14,7 @@ TagManager:
   - Obstacle
   - Water
   - UI
-  - 
+  - MapBound
   - 
   - 
   - 
@@ -49,6 +47,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Foreground
+    uniqueID: 349182495
+    locked: 0
+  - name: Shadow
+    uniqueID: 2983353827
+    locked: 0
+  - name: Lighting
+    uniqueID: 1921034069
+    locked: 0
   - name: UI
     uniqueID: 735366091
+    locked: 0
+  - name: PersistentUI
+    uniqueID: 1994926135
     locked: 0

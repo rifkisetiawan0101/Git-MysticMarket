@@ -7,6 +7,7 @@ using CodeMonkey.Utils;
 
 public class FurniturManager : MonoBehaviour {
     [SerializeField] private FurniturTypeSO activeFurniturType;
+    [SerializeField] private LayerMask ignoreLayerMask;
 
     private FurniturSelectUI furniturSelectUI;
     private bool isPlacingFurnitur = false;
@@ -82,7 +83,7 @@ public class FurniturManager : MonoBehaviour {
     public void FurniturPlacing(Vector3 position) {
         Instantiate(activeFurniturType.furniturConstructionPrefab, position, Quaternion.identity);
 
-        Koin.koin.updateKoin(-activeFurniturType.furniturPrice);
+        PersistentManager.Instance.UpdateKoin(-activeFurniturType.furniturPrice);
         SetActiveFurniturType(null); // Reset activeFurniturType setelah menaruh furnitur
         OnFurniturPlaced?.Invoke(); // Panggil event ketika furnitur ditempatkan
         isPlacingFurnitur = false; // Reset status placement
@@ -109,13 +110,13 @@ public class FurniturManager : MonoBehaviour {
             return false;
         }
 
-        if (Koin.koin.koins < furniturTypeSO.furniturPrice) {
+        if (PersistentManager.Instance.Koins < furniturTypeSO.furniturPrice) {
             return false;
         }
 
         BoxCollider2D furniturBoxCollider2D = furniturTypeSO.furniturPrefab.GetComponent<BoxCollider2D>();
         
-        if (Physics2D.OverlapBox(position + (Vector3)furniturBoxCollider2D.offset, furniturBoxCollider2D.size, 0) != null) {
+        if (Physics2D.OverlapBox(position + (Vector3)furniturBoxCollider2D.offset, furniturBoxCollider2D.size, 0, ~ignoreLayerMask) != null) {
             return false;
         }
 

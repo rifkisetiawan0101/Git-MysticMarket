@@ -13,16 +13,16 @@ public class PenghargaanManager : MonoBehaviour {
     [SerializeField] private GameObject dateTextGO_1;
 
     private void OnEnable() {
-        MerchantManager.OnTotalMerchantChanged += PenghargaanDuaToko;
-        Koin.OnTotalKoinChanged += PenghargaanKoin2000K;
+        MerchantManager.OnTotalMerchantChanged += PenghargaanSatuToko;
+        PersistentManager.OnTotalKoinChanged += PenghargaanKoin2000K;
     }
 
     private void OnDisable() {
-        MerchantManager.OnTotalMerchantChanged -= PenghargaanDuaToko;
-        Koin.OnTotalKoinChanged -= PenghargaanKoin2000K;
+        MerchantManager.OnTotalMerchantChanged -= PenghargaanSatuToko;
+        PersistentManager.OnTotalKoinChanged -= PenghargaanKoin2000K;
     }
-    private void PenghargaanDuaToko() {
-        if (MerchantManager.totalMerchant == 2) {
+    private void PenghargaanSatuToko() {
+        if (MerchantManager.totalMerchant == 1) {
             buttonCollectPenghargaan_1.SetActive(true);
 
             buttonCollectPenghargaan_1.GetComponent<Button>().onClick.AddListener(() => {
@@ -31,7 +31,7 @@ public class PenghargaanManager : MonoBehaviour {
                 TextMeshProUGUI dateText = dateTextGO_1.GetComponent<TextMeshProUGUI>();
                 dateText.text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 ceklis_1.sprite = ceklisOn;
-                Koin.koin.updateKoin(150f);
+                PersistentManager.Instance.UpdateKoin(150f);
             });
         }
     }
@@ -60,7 +60,7 @@ public class PenghargaanManager : MonoBehaviour {
     [SerializeField] private GameObject dateTextGO_4;
 
     private void PenghargaanKoin2000K(){
-        if (Koin.koin.koins >= 2000) {
+        if (PersistentManager.Instance.Koins >= 2000) {
             buttonCollectPenghargaan_4.SetActive(true);
 
             buttonCollectPenghargaan_4.GetComponent<Button>().onClick.AddListener(() => {
@@ -69,7 +69,7 @@ public class PenghargaanManager : MonoBehaviour {
                 TextMeshProUGUI dateText = dateTextGO_4.GetComponent<TextMeshProUGUI>();
                 dateText.text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 ceklis_4.sprite = ceklisOn;
-                Koin.koin.updateKoin(3333f);
+                PersistentManager.Instance.UpdateKoin(3333f);
             });
         }
     }

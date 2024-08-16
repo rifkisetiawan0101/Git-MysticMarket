@@ -7,7 +7,6 @@ public class VirtualCameraZoom : MonoBehaviour
     public float startSize = 1185f;
     public float targetSize = 760f;
     public float smoothTime = 1f;
-    
     private float velocity = 0f;
 
     void Start() {

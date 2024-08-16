@@ -58,9 +58,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HeadThickness: 0.025
-    - _Progress: 0
-    - _Segments: 5
+    - _HeadThickness: 0.02
+    - _Progress: 0.343
+    - _Segments: 6
     m_Colors:
     - _HeadColor: {r: 0, g: 2.839216, b: 4, a: 0.627451}
   m_BuildTextureStacks: []

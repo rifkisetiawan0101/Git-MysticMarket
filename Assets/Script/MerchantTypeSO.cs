@@ -13,9 +13,4 @@ public class MerchantTypeSO : ScriptableObject {
     public Sprite merchantWindow;
     public GameObject merchantCursor;
     public Transform merchantPlacementPrefab;
-
-    // private void Awake() {
-    //     merchantPrefab = new List<Transform>();
-    //     merchantConstructionPrefab = new List<Transform>();
-    // }
 }

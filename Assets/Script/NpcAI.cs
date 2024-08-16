@@ -31,17 +31,16 @@ public class NpcAI : MonoBehaviour
         SetRandomTarget();
     }
 
-    private void Start()
-    {
+    private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         _oldPosition = rb.position;
-
+    }
+    private void Start()
+    {
         if (merchantManager != null) {
             SetRandomTarget();
             StartCoroutine(MoveToTarget());
-        } else {
-            Debug.LogWarning("MerchantManager belum di-set.");
         }
     }
 
@@ -54,30 +53,48 @@ public class NpcAI : MonoBehaviour
         }
     }
 
+    private void NpcAnimation() {
+        Vector2 newPosition = transform.position;
+        Vector2 movement = (newPosition - _oldPosition).normalized;
+        _oldPosition = newPosition;
+
+        rb.velocity = movement * speed;
+
+        float horizontalValue = Mathf.Clamp(movement.x, -1f, 1f);
+        float verticalValue = Mathf.Clamp(movement.y, -1f, 1f);
+
+        // Set animator parameters
+        animator.SetFloat(_horizontal, horizontalValue);
+        animator.SetFloat(_vertical, verticalValue);
+
+        if (movement != Vector2.zero) {
+            if (movement.x > 0) {
+                animator.SetFloat(_horizontal, 1);
+                animator.SetFloat(_vertical, 0);
+            }
+            else if (movement.x < 0) {
+                animator.SetFloat(_horizontal, -1);
+                animator.SetFloat(_vertical, 0);
+            }
+            else if (movement.y > 0) {
+                animator.SetFloat(_horizontal, 0);
+                animator.SetFloat(_vertical, 1);
+            }
+            else if (movement.y < 0) {
+                animator.SetFloat(_horizontal, 0);
+                animator.SetFloat(_vertical, -1);
+            }
+        }
+    }
+
     private IEnumerator MoveToTarget()
     {
         while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
         {
-            Vector2 direction = (targetPosition - transform.position).normalized;
             Vector2 targetPos = Vector2.SmoothDamp(rb.position, targetPosition, ref velocity, smoothTime, speed * Time.deltaTime);
             rb.MovePosition(targetPos);
 
-            Vector2 movement = (rb.position - _oldPosition).normalized;
-            _oldPosition = rb.position;
-
-            animator.SetFloat(_horizontal, movement.x);
-            animator.SetFloat(_vertical, movement.y);
-
-            if (movement != Vector2.zero)
-            {
-                animator.SetFloat(_lastHorizontal, movement.x);
-                animator.SetFloat(_lastVertical, movement.y);
-                animator.SetBool("isMoving", true);
-            }
-            else
-            {
-                animator.SetBool("isMoving", false);
-            }
+            NpcAnimation();
 
             yield return null;
         }
@@ -89,26 +106,10 @@ public class NpcAI : MonoBehaviour
     {
         while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
         {
-            Vector2 direction = (targetPosition - transform.position).normalized;
             Vector2 targetPos = Vector2.SmoothDamp(rb.position, targetPosition, ref velocity, smoothTime, speed * Time.deltaTime);
             rb.MovePosition(targetPos);
 
-            Vector2 movement = (rb.position - _oldPosition).normalized;
-            _oldPosition = rb.position;
-
-            animator.SetFloat(_horizontal, movement.x);
-            animator.SetFloat(_vertical, movement.y);
-
-            if (movement != Vector2.zero)
-            {
-                animator.SetFloat(_lastHorizontal, movement.x);
-                animator.SetFloat(_lastVertical, movement.y);
-                animator.SetBool("isMoving", true);
-            }
-            else
-            {
-                animator.SetBool("isMoving", false);
-            }
+            NpcAnimation();
 
             yield return null;
         }
@@ -118,7 +119,6 @@ public class NpcAI : MonoBehaviour
 
     private IEnumerator PauseAtTarget()
     {
-        animator.SetBool("isMoving", false);
         yield return new WaitForSeconds(pauseTime);
 
         StartCoroutine(MoveRandomly());
@@ -126,24 +126,21 @@ public class NpcAI : MonoBehaviour
 
     private IEnumerator PauseAtTarget2()
     {
-        animator.SetBool("isMoving", false);
         yield return new WaitForSeconds(pauseTime);
 
-        ReturnToSpawn();
+        StartCoroutine(MoveToSpawn());
     }
 
     private IEnumerator PauseAtRandom() {
-        animator.SetBool("isMoving", false);
         yield return new WaitForSeconds(pauseTime);
 
         SetRandomTarget();
         StartCoroutine(MoveToTarget2());
-
     }
 
     private IEnumerator MoveRandomly()
     {
-        Vector3 randomDirection = Random.insideUnitCircle.normalized * Random.Range(500f, 1000f);
+        Vector3 randomDirection = Random.insideUnitCircle.normalized * Random.Range(1000f, 1500f);
         Vector3 randomTarget = transform.position + randomDirection;
 
         float timer = 0f;
@@ -152,15 +149,12 @@ public class NpcAI : MonoBehaviour
             Vector2 targetPos = Vector2.SmoothDamp(rb.position, randomTarget, ref velocity, smoothTime, speed * Time.deltaTime);
             rb.MovePosition(targetPos);
 
+            NpcAnimation();
+
             timer += Time.deltaTime;
             yield return null;
         }
         StartCoroutine(PauseAtRandom());
-    }
-
-    private void ReturnToSpawn()
-    {
-        StartCoroutine(MoveToSpawn());
     }
 
     private IEnumerator MoveToSpawn()
@@ -169,6 +163,8 @@ public class NpcAI : MonoBehaviour
         {
             Vector2 targetPos = Vector2.SmoothDamp(rb.position, spawnPosition, ref velocity, smoothTime, speed * Time.deltaTime);
             rb.MovePosition(targetPos);
+
+            NpcAnimation();
 
             yield return null;
         }

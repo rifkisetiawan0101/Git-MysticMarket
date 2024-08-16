@@ -7,6 +7,7 @@ using CodeMonkey.Utils;
 
 public class SpesialManager : MonoBehaviour {
     [SerializeField] private SpesialTypeSO activeSpesialType;
+    [SerializeField] private LayerMask ignoreLayerMask;
 
     private SpesialSelectUI spesialSelectUI;
     private bool isPlacingSpesial = false;
@@ -82,7 +83,7 @@ public class SpesialManager : MonoBehaviour {
     public void SpesialPlacing(Vector3 position) {
         Instantiate(activeSpesialType.spesialConstructionPrefab, position, Quaternion.identity);
 
-        Koin.koin.updateKoin(-activeSpesialType.spesialPrice);
+        PersistentManager.Instance.UpdateKoin(-activeSpesialType.spesialPrice);
         SetActiveSpesialType(null); // Reset activeSpesialType setelah menaruh spesial
         OnSpesialPlaced?.Invoke(); // Panggil event ketika spesial ditempatkan
         isPlacingSpesial = false; // Reset status placement
@@ -109,13 +110,13 @@ public class SpesialManager : MonoBehaviour {
             return false;
         }
 
-        if (Koin.koin.koins < spesialTypeSO.spesialPrice) {
+        if (PersistentManager.Instance.Koins < spesialTypeSO.spesialPrice) {
             return false;
         }
 
         BoxCollider2D spesialBoxCollider2D = spesialTypeSO.spesialPrefab.GetComponent<BoxCollider2D>();
         
-        if (Physics2D.OverlapBox(position + (Vector3)spesialBoxCollider2D.offset, spesialBoxCollider2D.size, 0) != null) {
+        if (Physics2D.OverlapBox(position + (Vector3)spesialBoxCollider2D.offset, spesialBoxCollider2D.size, 0, ~ignoreLayerMask) != null) {
             return false;
         }
 

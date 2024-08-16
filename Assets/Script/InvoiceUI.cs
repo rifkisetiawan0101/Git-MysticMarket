@@ -2,27 +2,42 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
 
 public class InvoiceUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI dayText;
     [SerializeField] private TextMeshProUGUI totalKeuanganText;
-    [SerializeField] private Button buttonTutupPasar; // Referensi ke button Tutup Pasar
+    [SerializeField] private TextMeshProUGUI jumlahPedagangText;
+    [SerializeField] private TextMeshProUGUI setoranPedagangText;
+    [SerializeField] private Button buttonMenujuPagi; // Referensi ke button Tutup Pasar
+    [SerializeField] private Timer timer;
 
     private void Start() {
-        // Menambahkan listener ke buttonTutupPasar untuk berpindah ke scene "InGamePagi"
-        buttonTutupPasar.onClick.AddListener(() => {
-            Time.timeScale = 1; // Melanjutkan waktu (jika diperlukan)
+        buttonMenujuPagi.onClick.AddListener(() => {
+            Time.timeScale = 1;
             SceneManager.LoadScene("InGamePagi");
+            timer.NextDay();
+            gameObject.SetActive(false);
         });
     }
 
-    public void ShowInvoice(float totalKeuangan, int day) {
-        totalKeuanganText.text = totalKeuangan.ToString("N0") + "K"; // Menampilkan total keuangan
-        dayText.text = day.ToString(); // Menampilkan hanya angka hari
+    public void ShowInvoice() {
+        dayText.text = Timer.dayCounter.ToString();
+        totalKeuanganText.text = PersistentManager.Instance.Koins.ToString("N0") + "K"; 
+        jumlahPedagangText.text = MerchantManager.totalMerchant.ToString();
+
+        int nilaiSetoran = MerchantManager.totalMerchant * 100;
+        setoranPedagangText.text = nilaiSetoran.ToString("N0") + "K";
+
+        if (!timer.invoiceShown) {
+            PersistentManager.Instance.UpdateKoin(nilaiSetoran);
+        }
+
         gameObject.SetActive(true); // Menampilkan InvoiceUI
     }
-
-    public void UpdateDayText(int day) {
-        dayText.text = day.ToString(); // Update Day Text dengan angka hari
+    
+    public void UpdateDayText() {
+        dayText.text = Timer.dayCounter.ToString(); // Update Day Text dengan angka hari
     }
 }
+
