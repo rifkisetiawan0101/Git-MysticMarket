@@ -9,7 +9,7 @@ public class TimerPagi : MonoBehaviour {
 
     private float elapsedTime = 0f; // Waktu yang berlalu dalam real time
     private float totalInGameMinutes = 12 * 60; // Total waktu in-game dari 06:00 sampai 18:00 dalam menit
-    private float realLifeDuration = 1.5f * 60; // Durasi 2 menit di real life dalam detik
+    private float realLifeDuration = 3f * 60; // Durasi 2 menit di real life dalam detik
     public bool bukaPasarShown = false;
     [SerializeField] private GameObject mobilBakPrefab;
     [SerializeField] private Transform spawnPoint; // Tempat spawn MobilBak

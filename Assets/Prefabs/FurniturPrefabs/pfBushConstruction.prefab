@@ -144,4 +144,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetPrefab: {fileID: 4434975520292696249, guid: 6ff2b28ede9cf8a44ab62649f52e8131, type: 3}
-  timeToConstruct: 5
+  timeToConstruct: 3

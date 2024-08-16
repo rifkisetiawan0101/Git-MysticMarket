@@ -9,7 +9,7 @@ public class Timer : MonoBehaviour {
 
     private float elapsedTime;
     private float totalInGameMinutes = 12 * 60; // Total waktu in-game dari 18:00 sampai 06:00 dalam menit
-    private float realLifeDuration = 1.5f * 60; // Durasi 2 menit di real life dalam detik
+    private float realLifeDuration = 3f * 60; // Durasi 2 menit di real life dalam detik
     public static int dayCounter = 1; // Hari ke berapa saat game dimainkan
     public bool invoiceShown = false;
 
