@@ -15,7 +15,7 @@ MonoBehaviour:
   merchantName: Penjual Daging
   merchantPrice: 2500
   merchantPrefab: {fileID: 2039379549796929907, guid: 931e35cab09979641a9f659aad3ebdfc, type: 3}
-  merchantConstructionPrefab: {fileID: 2039379549796929907, guid: d03d1a9a4c39a644bab0b81ab831970b, type: 3}
+  merchantConstructionPrefab: {fileID: 8695775265983995601, guid: 79cec47e23d48904a95d25c109481d38, type: 3}
   merchantButton: {fileID: 21300000, guid: c0bf5382bf784a04f9d166a78c6d5376, type: 3}
   selectedMerchantButton: {fileID: 21300000, guid: 19a732e04fa9ec14dad76ea516f22364, type: 3}
   merchantWindow: {fileID: 21300000, guid: 60022d661fe255b43b966e6501346c77, type: 3}

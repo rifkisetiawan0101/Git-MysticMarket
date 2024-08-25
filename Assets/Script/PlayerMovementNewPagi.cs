@@ -158,8 +158,6 @@ public class PlayerMovementNewPagi : MonoBehaviour
             animator.SetFloat(_horizontal, 0);
             animator.SetFloat(_vertical, 0);
         }
-
-        // animator.SetBool("isMoving", isMoving);
     }
 
     void ShowClickMarker()

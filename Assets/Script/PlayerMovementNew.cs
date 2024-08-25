@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerMovementNew : MonoBehaviour
 {
+    public static PlayerMovementNew Instance;
     public float moveSpeed = 1000f;
     public GameObject clickMarkerPrefab;
     public float nextWaypointDistance = 20f;
@@ -132,12 +133,20 @@ public class PlayerMovementNew : MonoBehaviour
         }
     }
 
-    void ReachDestination()
+    public void ReachDestination()
     {
         isMoving = false; // Berhenti bergerak
         rb.velocity = Vector2.zero;
         path = null;
         UpdateAnimation(); // Pastikan animasi diperbarui
+    }
+
+    public void StopPlayer()
+    {
+        isMoving = false; // Berhenti bergerak
+        rb.velocity = Vector2.zero; // Menghentikan semua pergerakan
+        path = null; // Menghapus path yang sedang diikuti
+        UpdateAnimation(); // Pastikan animasi diperbarui untuk menampilkan idle
     }
 
     void UpdateAnimation()
@@ -159,8 +168,6 @@ public class PlayerMovementNew : MonoBehaviour
             animator.SetFloat(_horizontal, 0);
             animator.SetFloat(_vertical, 0);
         }
-
-        // animator.SetBool("isMoving", isMoving);
     }
 
     void ShowClickMarker()

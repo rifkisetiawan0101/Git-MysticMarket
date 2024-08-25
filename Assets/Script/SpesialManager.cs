@@ -1,62 +1,53 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using CodeMonkey.Utils;
 
 public class SpesialManager : MonoBehaviour {
+    public static SpesialManager Instance { get; private set; }
+
     [SerializeField] private SpesialTypeSO activeSpesialType;
+    [SerializeField] private SpesialTerkunciSO activeTerkunciType;
+    [SerializeField] private SpesialTerpasangSO activeTerpasangType;
     [SerializeField] private LayerMask ignoreLayerMask;
 
     private SpesialSelectUI spesialSelectUI;
     private bool isPlacingSpesial = false;
     public bool isSpesialPlaced = true;
+    [SerializeField] private GameObject LahanBurukNotif;
 
-    private GridXY<GridObject> grid;
-    private int cellSize = 60;
     private void Awake() {
-        int gridWidth = 6000 / cellSize;
-        int gridHeight = 6000 / cellSize;
-        grid = new GridXY<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (GridXY<GridObject> g, int x, int y) => new GridObject(g, x, y));
-    }
-
-    public class GridObject {
-
-        private GridXY<GridObject> grid;
-        private int x;
-        private int y;
-
-        public GridObject(GridXY<GridObject> grid, int x, int y) {
-            this.grid = grid;
-            this.x = x;
-            this.y = y;
-        }
-
-        //Debug untuk menampilkan koordinat
-        public override string ToString()
-        {
-            return x + ", " + y;
+        if (Instance == null) {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Jangan hancurkan saat berpindah scene
+        } else {
+            Destroy(gameObject); // Hancurkan jika instance sudah ada
         }
     }
 
     public event Action OnSpesialPlaced;
-
     private void Update() {
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && !isPlacingSpesial) {
             Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
             if (CanSpawnSpesial(activeSpesialType, mouseWorldPosition)) {
                 PlacementInstance();
+                UIManager.Instance.DeactivateUI();
+            }  else if (LahanBuruk(activeSpesialType, mouseWorldPosition)) {
+                StartCoroutine(PlayLahanBuruk());
+                UIManager.Instance.ActivateUI();
             }
         }
         spesialSelectUI = FindObjectOfType<SpesialSelectUI>();
+
+        UpdateSpesialPlacementStatus();
     }
 
     private Transform placementInstance;
     private void PlacementInstance() {
         Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
-        grid.GetXY(mouseWorldPosition, out int x, out int y);
-        Vector3 spawnPosition = grid.GetWorldPosition(x, y) + new Vector3(cellSize, cellSize, 0) * 0.5f;
+
+        Vector3 spawnPosition = mouseWorldPosition;
         placementInstance = Instantiate(activeSpesialType.spesialPlacementPrefab, spawnPosition, Quaternion.identity);
 
         // Set status isPlacingSpesial menjadi true setelah memanggil placement
@@ -77,24 +68,34 @@ public class SpesialManager : MonoBehaviour {
             isPlacingSpesial = false;
         }
     }
-
-    public static event Action OnTotalSpesialChanged;
-    public static int totalSpesial = 0;
+    
     public void SpesialPlacing(Vector3 position) {
+        int index = spesialSelectUI.spesialTypeSOList.IndexOf(activeSpesialType);
+        if (index >= 0 && index < IsSpesialPlaced.Length) {
+            IsSpesialPlaced[index] = true;
+            spesialSelectUI.terpasangButtonList[index].gameObject.SetActive(true);
+        }
+
         Instantiate(activeSpesialType.spesialConstructionPrefab, position, Quaternion.identity);
 
-        PersistentManager.Instance.UpdateKoin(-activeSpesialType.spesialPrice);
+        PersistentManager.SpesialData newSpesialData = new PersistentManager.SpesialData {
+            spesialTypeSO = activeSpesialType, // Atur spesialTypeSO
+            spesialPosition = position
+        };
+
+        PersistentManager.Instance.dataSpesialList.Add(newSpesialData);
+        
         SetActiveSpesialType(null); // Reset activeSpesialType setelah menaruh spesial
         OnSpesialPlaced?.Invoke(); // Panggil event ketika spesial ditempatkan
         isPlacingSpesial = false; // Reset status placement
-        totalSpesial += 1;
-        Debug.Log ("Total Spesial " + totalSpesial);
-        OnTotalSpesialChanged?.Invoke();
+
+        UIManager.Instance.ActivateUI();
     }
 
     public void CancelPlacement() {
         SetActiveSpesialType(null);
         isPlacingSpesial = false; // Reset status placement jika dibatalkan
+        UIManager.Instance.ActivateUI();
     }
 
     public void SetActiveSpesialType(SpesialTypeSO spesialTypeSO) {
@@ -105,22 +106,70 @@ public class SpesialManager : MonoBehaviour {
         return activeSpesialType;
     }
 
+    public void SetActiveTerkunciType(SpesialTerkunciSO spesialTerkunciSO) {
+        activeTerkunciType = spesialTerkunciSO;
+    }
+
+    public SpesialTerkunciSO GetActiveTerkunciType() {
+        return activeTerkunciType;
+    }
+
+    public void SetActiveTerpasangType(SpesialTerpasangSO spesialTerpasangSO) {
+        activeTerpasangType = spesialTerpasangSO;
+    }
+
+    public SpesialTerpasangSO GetActiveTerpasangType() {
+        return activeTerpasangType;
+    }
+
     private bool CanSpawnSpesial(SpesialTypeSO spesialTypeSO, Vector3 position) {
         if (activeSpesialType == null) {
             return false;
         }
 
-        if (PersistentManager.Instance.Koins < spesialTypeSO.spesialPrice) {
+        
+        PolygonCollider2D spesialCollider = spesialTypeSO.spesialPrefab.GetComponent<PolygonCollider2D>();
+
+        if (spesialCollider == null) {
+            Debug.LogError("PolygonCollider2D tidak ditemukan pada prefab spesial!");
             return false;
         }
 
-        BoxCollider2D spesialBoxCollider2D = spesialTypeSO.spesialPrefab.GetComponent<BoxCollider2D>();
+        Vector2[] worldSpacePoints = new Vector2[spesialCollider.points.Length];
+
+        for (int i = 0; i < spesialCollider.points.Length; i++) {
+            worldSpacePoints[i] = (Vector2)position + spesialCollider.points[i];
         
-        if (Physics2D.OverlapBox(position + (Vector3)spesialBoxCollider2D.offset, spesialBoxCollider2D.size, 0, ~ignoreLayerMask) != null) {
-            return false;
+            if (Physics2D.OverlapPoint(worldSpacePoints[i], ~ignoreLayerMask) != null) {
+                return false;
+            }
         }
 
         return true;
+    }
+
+    private bool LahanBuruk(SpesialTypeSO spesialTypeSO, Vector3 position) {
+        PolygonCollider2D spesialCollider = spesialTypeSO.spesialPrefab.GetComponent<PolygonCollider2D>();
+
+        Vector2[] worldSpacePoints = new Vector2[spesialCollider.points.Length];
+
+        for (int i = 0; i < spesialCollider.points.Length; i++) {
+            worldSpacePoints[i] = (Vector2)position + spesialCollider.points[i];
+        
+            if (Physics2D.OverlapPoint(worldSpacePoints[i], ~ignoreLayerMask) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private IEnumerator PlayLahanBuruk() {
+        LahanBurukNotif.SetActive(true);
+        SetActiveSpesialType(null);
+        Destroy(spesialSelectUI.cursorInstance);
+        yield return new WaitForSeconds(1.277f);
+        isSpesialPlaced = true;
+        LahanBurukNotif.SetActive(false);
     }
 
     public IEnumerator ActivateIsSpesialPlaced(float delay) {
@@ -131,5 +180,14 @@ public class SpesialManager : MonoBehaviour {
     public IEnumerator DeactivateIsSpesialPlaced(float delay) {
         yield return new WaitForSeconds(delay);
         isSpesialPlaced = false;
+    }
+
+    private bool[] IsSpesialPlaced = new bool[6]; 
+        void UpdateSpesialPlacementStatus() {
+        for (int i = 0; i < IsSpesialPlaced.Length; i++) {
+            if (IsSpesialPlaced[i]) {
+                spesialSelectUI.terpasangButtonList[i].gameObject.SetActive(true);
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ public class FurniturSelectUI : MonoBehaviour {
     
     private List<Transform> furniturButtonList;
     private RectTransform rectTransform;
-    private GameObject cursorInstance; // Instance dari prefab kursor
+    public GameObject cursorInstance; // Instance dari prefab kursor
 
     private void Awake() {
         Transform furniturBtnTemplate = transform.Find("FurniturBtnTemplate");
@@ -31,11 +31,15 @@ public class FurniturSelectUI : MonoBehaviour {
                     DestroyCursorFurnitur(); // Hapus kursor jika furniturTypeSO diaktifkan/dinonaktifkan
                     StartCoroutine (furniturManager.ActivateIsFurniturPlaced(0.5f));
                     furniturManager.DestroyPlacementInstance();
+
+                    UIManager.Instance.ActivateUI();
                 } else {
                     furniturManager.SetActiveFurniturType(furniturTypeSO);
                     SetCursor(furniturTypeSO.furniturCursor); // Atur kursor saat furnitur dipilih
                     StartCoroutine (furniturManager.DeactivateIsFurniturPlaced(0.5f));
                     furniturManager.DestroyPlacementInstance();
+
+                    UIManager.Instance.DeactivateUI();
                 }
                 UpdateSelectedVisual();
             });
@@ -80,9 +84,9 @@ public class FurniturSelectUI : MonoBehaviour {
         UpdateSelectedVisual(); // Panggil update visual setelah furnitur ditempatkan
     }
 
-    private void OnDestroy() {
-        furniturManager.OnFurniturPlaced -= HandleFurniturPlaced; // Unregister event listener
-    }
+    // private void OnDestroy() {
+    //     furniturManager.OnFurniturPlaced -= HandleFurniturPlaced; // Unregister event listener
+    // }
 
     private void UpdateSelectedVisual() {
         FurniturTypeSO activeFurniturType = furniturManager.GetActiveFurniturType();

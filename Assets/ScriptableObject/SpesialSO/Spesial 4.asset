@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8041948e4e1604595cd1d22a0ee0b7, type: 3}
   m_Name: Spesial 4
   m_EditorClassIdentifier: 
-  spesialName: 
-  spesialPrice: 5000
-  spesialPrefab: {fileID: 0}
-  spesialConstructionPrefab: {fileID: 0}
-  spesialButton: {fileID: 0}
-  selectedSpesialButton: {fileID: 0}
-  spesialWindow: {fileID: 0}
-  spesialCursor: {fileID: 0}
-  spesialPlacementPrefab: {fileID: 0}
+  spesialName: Aku Dukun
+  spesialPrice: 0
+  spesialPrefab: {fileID: 5331294723538348162, guid: cd21619b2f516304898821ecf71cc7c2, type: 3}
+  spesialConstructionPrefab: {fileID: 5331294723538348162, guid: 7ba587146fdf9e447976111d96f77094, type: 3}
+  spesialButton: {fileID: 21300000, guid: a5143c2506020444b9216188e41fa37c, type: 3}
+  selectedSpesialButton: {fileID: 21300000, guid: 8453df702af18514f95b324857cb4756, type: 3}
+  spesialWindow: {fileID: 21300000, guid: c8f10f50c259c0e42a30afbb70422fb1, type: 3}
+  spesialCursor: {fileID: 8090969576927368307, guid: 76048f05cf86a564c9d79970cbc6418c, type: 3}
+  spesialPlacementPrefab: {fileID: 6384518165722326447, guid: c2fb00264e3f04642a6a347a79ec0d89, type: 3}

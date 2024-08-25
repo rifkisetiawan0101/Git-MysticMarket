@@ -63,6 +63,8 @@ public class ShopUI : MonoBehaviour {
         if (moveCoroutine != null) {
             StopCoroutine(moveCoroutine);
         }
+        
+        FindObjectOfType<PlayerMovementNew>().StopPlayer();
         moveCoroutine = StartCoroutine(MoveShopUI(initialPosition));
     }
 

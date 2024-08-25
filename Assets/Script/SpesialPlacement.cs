@@ -5,19 +5,10 @@ using UnityEngine.UI;
 public class SpesialPlacement : MonoBehaviour {
     private SpesialManager spesialManager;
     private Vector3 placementPosition;
+    private SpesialTypeSO spesialTypeSO;
 
     private void Start() {
-        Button buttonMerchant = GameObject.Find("ButtonMerchant").GetComponent<Button>(); 
-        buttonMerchant.onClick.AddListener(() => {
-            spesialManager.CancelPlacement();
-            Destroy(gameObject);
-        });
-
-        Button buttonFurnitur = GameObject.Find("ButtonFurnitur").GetComponent<Button>(); 
-        buttonFurnitur.onClick.AddListener(() => {
-            spesialManager.CancelPlacement();
-            Destroy(gameObject);
-        });
+        
     }
     public void Setup(Vector3 position, SpesialManager manager) {
         placementPosition = position;
@@ -29,6 +20,18 @@ public class SpesialPlacement : MonoBehaviour {
 
         buttonAccept.onClick.AddListener(() => AcceptButtonPlacement());
         buttonCancel.onClick.AddListener(() => CancelButtonPlacement());
+
+        Button buttonMerchant = GameObject.Find("ButtonMerchant").GetComponent<Button>(); 
+        buttonMerchant.onClick.AddListener(() => {
+            spesialManager.CancelPlacement();
+            Destroy(gameObject);
+        });
+
+        Button buttonFurnitur = GameObject.Find("ButtonFurnitur").GetComponent<Button>(); 
+        buttonFurnitur.onClick.AddListener(() => {
+            spesialManager.CancelPlacement();
+            Destroy(gameObject);
+        });
     }
 
     private void AcceptButtonPlacement() {

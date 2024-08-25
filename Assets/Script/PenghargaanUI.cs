@@ -8,6 +8,8 @@ public class PenghargaanUI : MonoBehaviour {
     [SerializeField] private Button buttonClose;
     [SerializeField] private ShopUI shopUI;
 
+    [SerializeField] private GameObject overlay;
+
     // Sprites untuk kondisi normal, selected, dan highlighted
     [SerializeField] private Sprite normalSprite;
     [SerializeField] private Sprite selectedSprite;
@@ -16,6 +18,7 @@ public class PenghargaanUI : MonoBehaviour {
     private bool isWindowOpen = false;
 
     private void Start() {
+        overlay.SetActive(false);
         shopUI = FindObjectOfType<ShopUI>();
 
         buttonPenghargaan.onClick.AddListener(TogglePenghargaanWindow);
@@ -30,33 +33,39 @@ public class PenghargaanUI : MonoBehaviour {
 
         // Mengatur sprite berdasarkan kondisi
         if (isWindowOpen) {
+            PersistentManager.Instance.isUIOpen = true;
             buttonPenghargaan.image.sprite = selectedSprite;
             penghargaanWindow.SetActive(true);
+            
+            overlay.SetActive(true);
             shopUI.CloseShopUI();
+
+            FindObjectOfType<PlayerMovementNew>().StopPlayer();
         } else {
+            PersistentManager.Instance.isUIOpen = false;
             buttonPenghargaan.image.sprite = normalSprite;
             penghargaanWindow.SetActive(false);
+
+            overlay.SetActive(false);
             shopUI.OpenShopUI();
         }
     }
 
     private void ClosePenghargaanWindow() {
+        PersistentManager.Instance.isUIOpen = false;
         isWindowOpen = false;
         penghargaanWindow.SetActive(false);
 
         buttonPenghargaan.image.sprite = normalSprite;
+        overlay.SetActive(false);
         shopUI.CloseShopUI();
     }
 
     public void OnHighlightButton() {
-        if (!isWindowOpen) {
-            buttonPenghargaan.image.sprite = highlightedSprite;
-        }
+        buttonPenghargaan.image.sprite = highlightedSprite;
     }
 
     public void OnUnhighlightButton() {
-        if (!isWindowOpen) {
-            buttonPenghargaan.image.sprite = normalSprite;
-        }
+        buttonPenghargaan.image.sprite = normalSprite;
     }
 }

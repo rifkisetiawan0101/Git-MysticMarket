@@ -7,17 +7,7 @@ public class FurniturPlacement : MonoBehaviour {
     private Vector3 placementPosition;
 
     private void Start() {
-        Button buttonMerchant = GameObject.Find("ButtonMerchant").GetComponent<Button>(); 
-        buttonMerchant.onClick.AddListener(() => {
-            furniturManager.CancelPlacement();
-            Destroy(gameObject);
-        });
         
-        Button buttonSpesial = GameObject.Find("ButtonSpesial").GetComponent<Button>(); 
-        buttonSpesial.onClick.AddListener(() => {
-            furniturManager.CancelPlacement();
-            Destroy(gameObject);
-        });
     }
     public void Setup(Vector3 position, FurniturManager manager) {
         placementPosition = position;
@@ -29,6 +19,18 @@ public class FurniturPlacement : MonoBehaviour {
 
         buttonAccept.onClick.AddListener(() => AcceptButtonPlacement());
         buttonCancel.onClick.AddListener(() => CancelButtonPlacement());
+
+        Button buttonMerchant = GameObject.Find("ButtonMerchant").GetComponent<Button>(); 
+        buttonMerchant.onClick.AddListener(() => {
+            furniturManager.CancelPlacement();
+            Destroy(gameObject);
+        });
+        
+        Button buttonSpesial = GameObject.Find("ButtonSpesial").GetComponent<Button>(); 
+        buttonSpesial.onClick.AddListener(() => {
+            furniturManager.CancelPlacement();
+            Destroy(gameObject);
+        });
     }
 
     private void AcceptButtonPlacement() {

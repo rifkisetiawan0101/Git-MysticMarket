@@ -1,52 +1,43 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using CodeMonkey.Utils;
 
 public class FurniturManager : MonoBehaviour {
+    public static FurniturManager Instance { get; private set; }
+
     [SerializeField] private FurniturTypeSO activeFurniturType;
     [SerializeField] private LayerMask ignoreLayerMask;
 
     private FurniturSelectUI furniturSelectUI;
     private bool isPlacingFurnitur = false;
     public bool isFurniturPlaced = true;
+    [SerializeField] private GameObject LessKoinNotif;
+    [SerializeField] private GameObject LahanBurukNotif;
 
-    private GridXY<GridObject> grid;
-    private int cellSize = 60;
     private void Awake() {
-        int gridWidth = 6000 / cellSize;
-        int gridHeight = 6000 / cellSize;
-        grid = new GridXY<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (GridXY<GridObject> g, int x, int y) => new GridObject(g, x, y));
-    }
-
-    public class GridObject {
-
-        private GridXY<GridObject> grid;
-        private int x;
-        private int y;
-
-        public GridObject(GridXY<GridObject> grid, int x, int y) {
-            this.grid = grid;
-            this.x = x;
-            this.y = y;
-        }
-
-        //Debug untuk menampilkan koordinat
-        public override string ToString()
-        {
-            return x + ", " + y;
+        if (Instance == null) {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Jangan hancurkan saat berpindah scene
+        } else {
+            Destroy(gameObject); // Hancurkan jika instance sudah ada
         }
     }
 
     public event Action OnFurniturPlaced;
-
     private void Update() {
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject() && !isPlacingFurnitur) {
             Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
             if (CanSpawnFurnitur(activeFurniturType, mouseWorldPosition)) {
                 PlacementInstance();
+                UIManager.Instance.DeactivateUI();
+            } else if (LessKoin(activeFurniturType)) {
+                StartCoroutine(PlayLessKoin());
+                UIManager.Instance.ActivateUI();
+            } else if (LahanBuruk(activeFurniturType, mouseWorldPosition)) {
+                StartCoroutine(PlayLahanBuruk());
+                UIManager.Instance.ActivateUI();
             }
         }
         furniturSelectUI = FindObjectOfType<FurniturSelectUI>();
@@ -55,8 +46,8 @@ public class FurniturManager : MonoBehaviour {
     private Transform placementInstance;
     private void PlacementInstance() {
         Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
-        grid.GetXY(mouseWorldPosition, out int x, out int y);
-        Vector3 spawnPosition = grid.GetWorldPosition(x, y) + new Vector3(cellSize, cellSize, 0) * 0.5f;
+
+        Vector3 spawnPosition = mouseWorldPosition;
         placementInstance = Instantiate(activeFurniturType.furniturPlacementPrefab, spawnPosition, Quaternion.identity);
 
         // Set status isPlacingFurnitur menjadi true setelah memanggil placement
@@ -78,23 +69,29 @@ public class FurniturManager : MonoBehaviour {
         }
     }
 
-    public static event Action OnTotalFurniturChanged;
-    public static int totalFurnitur = 0;
     public void FurniturPlacing(Vector3 position) {
         Instantiate(activeFurniturType.furniturConstructionPrefab, position, Quaternion.identity);
 
         PersistentManager.Instance.UpdateKoin(-activeFurniturType.furniturPrice);
+
+        PersistentManager.FurniturData newFurniturData = new PersistentManager.FurniturData {
+            furniturTypeSO = activeFurniturType, // Atur FurniturTypeSO
+            furniturPosition = position
+        };
+
+        PersistentManager.Instance.dataFurniturList.Add(newFurniturData);
+
         SetActiveFurniturType(null); // Reset activeFurniturType setelah menaruh furnitur
         OnFurniturPlaced?.Invoke(); // Panggil event ketika furnitur ditempatkan
         isPlacingFurnitur = false; // Reset status placement
-        totalFurnitur += 1;
-        Debug.Log ("Total Furnitur " + totalFurnitur);
-        OnTotalFurniturChanged?.Invoke();
+
+        UIManager.Instance.ActivateUI();
     }
 
     public void CancelPlacement() {
         SetActiveFurniturType(null);
         isPlacingFurnitur = false; // Reset status placement jika dibatalkan
+        UIManager.Instance.ActivateUI();
     }
 
     public void SetActiveFurniturType(FurniturTypeSO furniturTypeSO) {
@@ -110,17 +107,68 @@ public class FurniturManager : MonoBehaviour {
             return false;
         }
 
-        if (PersistentManager.Instance.Koins < furniturTypeSO.furniturPrice) {
+        if (PersistentManager.Instance.dataKoin <= furniturTypeSO.furniturPrice) {
             return false;
         }
 
-        BoxCollider2D furniturBoxCollider2D = furniturTypeSO.furniturPrefab.GetComponent<BoxCollider2D>();
-        
-        if (Physics2D.OverlapBox(position + (Vector3)furniturBoxCollider2D.offset, furniturBoxCollider2D.size, 0, ~ignoreLayerMask) != null) {
+        PolygonCollider2D furniturCollider = furniturTypeSO.furniturPrefab.GetComponent<PolygonCollider2D>();
+
+        if (furniturCollider == null) {
+            Debug.LogError("PolygonCollider2D tidak ditemukan pada prefab furnitur!");
             return false;
+        }
+
+        Vector2[] worldSpacePoints = new Vector2[furniturCollider.points.Length];
+
+        for (int i = 0; i < furniturCollider.points.Length; i++) {
+            worldSpacePoints[i] = (Vector2)position + furniturCollider.points[i];
+        
+            if (Physics2D.OverlapPoint(worldSpacePoints[i], ~ignoreLayerMask) != null) {
+                return false;
+            }
         }
 
         return true;
+    }
+
+    private bool LessKoin(FurniturTypeSO furniturTypeSO) {
+        if (PersistentManager.Instance.dataKoin < furniturTypeSO.furniturPrice) {
+            return true;
+        }
+        return false;
+    }
+
+    private IEnumerator PlayLessKoin() {
+        LessKoinNotif.SetActive(true);
+        SetActiveFurniturType(null);
+        Destroy(furniturSelectUI.cursorInstance);
+        yield return new WaitForSeconds(1.277f);
+        isFurniturPlaced = true;
+        LessKoinNotif.SetActive(false);
+    }
+
+    private bool LahanBuruk(FurniturTypeSO furniturTypeSO, Vector3 position) {
+        PolygonCollider2D furniturCollider = furniturTypeSO.furniturPrefab.GetComponent<PolygonCollider2D>();
+
+        Vector2[] worldSpacePoints = new Vector2[furniturCollider.points.Length];
+
+        for (int i = 0; i < furniturCollider.points.Length; i++) {
+            worldSpacePoints[i] = (Vector2)position + furniturCollider.points[i];
+        
+            if (Physics2D.OverlapPoint(worldSpacePoints[i], ~ignoreLayerMask) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private IEnumerator PlayLahanBuruk() {
+        LahanBurukNotif.SetActive(true);
+        SetActiveFurniturType(null);
+        Destroy(furniturSelectUI.cursorInstance);
+        yield return new WaitForSeconds(1.277f);
+        isFurniturPlaced = true;
+        LahanBurukNotif.SetActive(false);
     }
 
     public IEnumerator ActivateIsFurniturPlaced(float delay) {

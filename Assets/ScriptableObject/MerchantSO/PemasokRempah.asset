@@ -15,7 +15,7 @@ MonoBehaviour:
   merchantName: Pemasok Rempah
   merchantPrice: 1250
   merchantPrefab: {fileID: 6755134844048657396, guid: aa57c5bf112a9ea4d99826eecf7eb9b1, type: 3}
-  merchantConstructionPrefab: {fileID: 6755134844048657396, guid: 3421bcaef28f5ac42863ba57d987bb97, type: 3}
+  merchantConstructionPrefab: {fileID: 8695775265983995601, guid: d0de0edfe941e9d4088104d42e72672e, type: 3}
   merchantButton: {fileID: 21300000, guid: 24a3b72ae6b9fc84abb10ffa8b8963ab, type: 3}
   selectedMerchantButton: {fileID: 21300000, guid: dda9cb65e0804ad488c61d4bbad79ebf, type: 3}
   merchantWindow: {fileID: 21300000, guid: bfbf14616cd47ef41b5c338c69514e85, type: 3}

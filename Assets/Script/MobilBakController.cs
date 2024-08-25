@@ -6,16 +6,19 @@ public class MobilBakController : MonoBehaviour {
     public Transform targetPosition;
     [SerializeField] private float speed = 5f;
     [SerializeField] private float smoothTime = 0.3f;
-    [SerializeField] private Canvas restokCanvas; // Referensi ke Canvas Restok
-    [SerializeField] private Button buttonRestok; // Referensi ke Button Restok
-    [SerializeField] private GameObject restokUI; // Referensi ke RestokUI
-    [SerializeField] private Button buttonCloseRestok; // Referensi ke Button Close Restok
+    [SerializeField] private Button buttonOpenRestok;
+    [SerializeField] private GameObject windowRestok;
+    [SerializeField] private GameObject overlay;
 
     private Vector3 velocity = Vector3.zero;
 
     private void Start() {
-        buttonRestok.onClick.AddListener(OpenRestokUI);
-        buttonCloseRestok.onClick.AddListener(CloseRestokUI);
+        buttonOpenRestok.onClick.AddListener(() => {
+            windowRestok.SetActive(true);
+            overlay.SetActive(false);
+
+            FindObjectOfType<PlayerMovementNew>().StopPlayer();
+        });
         
         StartCoroutine(MoveToTarget());
     }
@@ -25,13 +28,5 @@ public class MobilBakController : MonoBehaviour {
             transform.position = Vector3.SmoothDamp(transform.position, targetPosition.position, ref velocity, smoothTime, speed, Time.deltaTime);
             yield return null;
         }
-    }
-
-    private void OpenRestokUI() {
-        restokUI.SetActive(true);
-    }
-
-    private void CloseRestokUI() {
-        restokUI.SetActive(false);
     }
 }

@@ -5,14 +5,16 @@ using TMPro;
 
 public class Timer : MonoBehaviour {
     [SerializeField] TextMeshProUGUI timer;
-    [SerializeField] InvoiceUI invoiceUI; // Referensi ke script InvoiceUI melalui Inspector
+    [SerializeField] InvoiceUI invoiceUI;
+    [SerializeField] NotifUI notifUI;
 
-    private float elapsedTime;
-    private float totalInGameMinutes = 12 * 60; // Total waktu in-game dari 18:00 sampai 06:00 dalam menit
-    private float realLifeDuration = 3f * 60; // Durasi 2 menit di real life dalam detik
-    public static int dayCounter = 1; // Hari ke berapa saat game dimainkan
-    public bool invoiceShown = false;
-
+    public static float elapsedTime = 0;
+    private float totalInGameMinutes = 12 * 60; // Total waktu 12 jam in-game
+    private float realLifeDuration = 3f * 60; // Durasi menit di real life dalam detik
+    
+    public int hours;
+    public int minutes;
+    
     private void Update() {
         elapsedTime += Time.deltaTime;
 
@@ -20,8 +22,8 @@ public class Timer : MonoBehaviour {
         float inGameMinutes = (elapsedTime / realLifeDuration) * totalInGameMinutes;
 
         // Menghitung jam dan menit berdasarkan waktu in-game
-        int hours = 18 + Mathf.FloorToInt(inGameMinutes / 60);
-        int minutes = Mathf.FloorToInt(inGameMinutes % 60);
+        hours = 18 + Mathf.FloorToInt(inGameMinutes / 60);
+        minutes = Mathf.FloorToInt(inGameMinutes % 60);
 
         // Reset jam menjadi 0 saat melewati 24:00
         if (hours >= 24) {
@@ -30,19 +32,27 @@ public class Timer : MonoBehaviour {
 
         timer.text = string.Format("{0:00}:{1:00}", hours, minutes);
 
-        // Jika waktu in-game mencapai 06:00 pagi, hentikan timer dan tampilkan InvoiceUI
-        if (hours == 6 && minutes == 0) {
-            if (!invoiceShown) {
-                invoiceUI.ShowInvoice();
-                Time.timeScale = 0;
-            }
-            invoiceShown = true;
+        if (hours == 20 && minutes == 52) {
+            StartCoroutine(notifUI.PlayNotifUto());
         }
-    }
 
-    public void NextDay() {
-        dayCounter++;
-        PlayerPrefs.SetInt("DayCounter", dayCounter); // Simpan nilai ke PlayerPrefs
-        invoiceUI.UpdateDayText();
+        if (hours == 0 && minutes == 12) {
+            StartCoroutine(notifUI.PlayNotifUto());
+        }
+
+        if (hours == 3 && minutes == 32) {
+            StartCoroutine(notifUI.PlayNotifUto());
+        }
+
+        if (hours == 5 && minutes == 32) {
+            StartCoroutine(notifUI.PlayNotifMalam());
+        }
+
+        if (hours == 6 && minutes == 0) {
+            if (PersistentManager.Instance.isInvoiceShown == false) {
+                invoiceUI.ShowInvoice();
+                PersistentManager.Instance.isInvoiceShown = true;
+            }
+        }
     }
 }

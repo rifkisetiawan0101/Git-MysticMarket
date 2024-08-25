@@ -2,19 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NpcAI : MonoBehaviour
-{
+public class NpcAI : MonoBehaviour {
+    public static NpcAI npcAI { get; private set; }
+
     public float speed = 200f;
     public float smoothTime = 0.1f; 
-    public float pauseTime = 3f; // Waktu berhenti di target
-    public float randomMoveTime = 5f; // Waktu untuk gerakan acak
+    public float idleTime = 3f; // Waktu berhenti di target
+    public float feedbackTime = 0.8f;
 
     private MerchantManager merchantManager; 
     private Vector3 targetPosition;
     private Vector3 spawnPosition; // Posisi awal spawn NPC
 
     Rigidbody2D rb;
-    Animator animator;
+    [SerializeField] private Animator animator;
 
     private const string _horizontal = "Horizontal";
     private const string _vertical = "Vertical";
@@ -22,7 +23,7 @@ public class NpcAI : MonoBehaviour
     private const string _lastVertical = "LastVertical";
 
     private Vector2 velocity;
-    private Vector2 _oldPosition;
+    private Vector2 oldPosition;
 
     public void SetupNPC(MerchantManager manager) {
         // Inisialisasi MerchantManager dan posisi spawn
@@ -34,146 +35,131 @@ public class NpcAI : MonoBehaviour
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
-        _oldPosition = rb.position;
+        oldPosition = rb.position;
     }
-    private void Start()
-    {
+    private void Start() {
         if (merchantManager != null) {
             SetRandomTarget();
             StartCoroutine(MoveToTarget());
         }
     }
 
-    private void SetRandomTarget()
-    {
-        if (merchantManager != null && merchantManager.targetMerchantNPCList.Count > 0)
-        {
-            int randomIndex = Random.Range(0, merchantManager.targetMerchantNPCList.Count);
-            targetPosition = merchantManager.targetMerchantNPCList[randomIndex];
+    private void Update() {
+        NpcAnimation();
+    }
+
+    [SerializeField] private int randomIndex;
+    
+    private void SetRandomTarget() {
+        if (PersistentManager.Instance.dataMerchantList.Count > 0) {
+            randomIndex = Random.Range(0, PersistentManager.Instance.dataMerchantList.Count);
+            targetPosition = PersistentManager.Instance.dataMerchantList[randomIndex].merchantPosition;
         }
     }
 
+    public bool isNpcMove = false;
     private void NpcAnimation() {
         Vector2 newPosition = transform.position;
-        Vector2 movement = (newPosition - _oldPosition).normalized;
-        _oldPosition = newPosition;
-
-        rb.velocity = movement * speed;
-
-        float horizontalValue = Mathf.Clamp(movement.x, -1f, 1f);
-        float verticalValue = Mathf.Clamp(movement.y, -1f, 1f);
-
-        // Set animator parameters
-        animator.SetFloat(_horizontal, horizontalValue);
-        animator.SetFloat(_vertical, verticalValue);
+        Vector2 movement = (newPosition - oldPosition).normalized;
+        oldPosition = newPosition;
 
         if (movement != Vector2.zero) {
-            if (movement.x > 0) {
-                animator.SetFloat(_horizontal, 1);
-                animator.SetFloat(_vertical, 0);
+            animator.SetFloat(_horizontal, movement.x);
+            animator.SetFloat(_vertical, movement.y);
+            animator.SetFloat(_lastHorizontal, movement.x);
+            animator.SetFloat(_lastVertical, movement.y);
+        if (isNpcMove) {
+                animator.Play("Movement");
             }
-            else if (movement.x < 0) {
-                animator.SetFloat(_horizontal, -1);
-                animator.SetFloat(_vertical, 0);
-            }
-            else if (movement.y > 0) {
-                animator.SetFloat(_horizontal, 0);
-                animator.SetFloat(_vertical, 1);
-            }
-            else if (movement.y < 0) {
-                animator.SetFloat(_horizontal, 0);
-                animator.SetFloat(_vertical, -1);
+        } else {
+            if (!isNpcMove) {
+                animator.Play("Idle");
             }
         }
     }
 
-    private IEnumerator MoveToTarget()
-    {
-        while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
-        {
+    private IEnumerator MoveToTarget() {
+        while (Vector3.Distance(transform.position, targetPosition) > 0.1f) {
             Vector2 targetPos = Vector2.SmoothDamp(rb.position, targetPosition, ref velocity, smoothTime, speed * Time.deltaTime);
             rb.MovePosition(targetPos);
-
-            NpcAnimation();
+            isNpcMove = true;
 
             yield return null;
         }
 
-        StartCoroutine(PauseAtTarget());
+        StartCoroutine(idleAtTarget());
     }
 
-    private IEnumerator MoveToTarget2()
-    {
-        while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
-        {
+    private IEnumerator MoveToTarget2() {
+        while (Vector3.Distance(transform.position, targetPosition) > 0.1f) {
             Vector2 targetPos = Vector2.SmoothDamp(rb.position, targetPosition, ref velocity, smoothTime, speed * Time.deltaTime);
             rb.MovePosition(targetPos);
 
-            NpcAnimation();
-
+            isNpcMove = true;
+            
             yield return null;
         }
 
-        StartCoroutine(PauseAtTarget2());
+        StartCoroutine(idleAtTarget2());
     }
 
-    private IEnumerator PauseAtTarget()
-    {
-        yield return new WaitForSeconds(pauseTime);
+    private IEnumerator idleAtTarget() {
+        yield return new WaitForSeconds(idleTime);
+        var merchantData = PersistentManager.Instance.dataMerchantList[randomIndex];
 
+        if (merchantData.stokDagangan > 0) {
+            isNpcMove = false;
+        }
+        
+        yield return new WaitForSeconds(feedbackTime);
         StartCoroutine(MoveRandomly());
     }
 
-    private IEnumerator PauseAtTarget2()
-    {
-        yield return new WaitForSeconds(pauseTime);
+    private IEnumerator idleAtTarget2() {
+        yield return new WaitForSeconds(idleTime);
+        var merchantData = PersistentManager.Instance.dataMerchantList[randomIndex];
 
+        if (merchantData.stokDagangan > 0) {
+            isNpcMove = false;
+        }
+
+        yield return new WaitForSeconds(feedbackTime);
         StartCoroutine(MoveToSpawn());
     }
 
-    private IEnumerator PauseAtRandom() {
-        yield return new WaitForSeconds(pauseTime);
-
+    private IEnumerator idleAtRandom() {
+        isNpcMove = true;
+        yield return new WaitForSeconds(idleTime);
         SetRandomTarget();
         StartCoroutine(MoveToTarget2());
     }
 
-    private IEnumerator MoveRandomly()
-    {
-        Vector3 randomDirection = Random.insideUnitCircle.normalized * Random.Range(1000f, 1500f);
+    private IEnumerator MoveRandomly() {
+        Vector3 randomDirection = Random.insideUnitCircle.normalized * Random.Range(1500f, 3000f);
         Vector3 randomTarget = transform.position + randomDirection;
 
-        float timer = 0f;
-        while (timer < randomMoveTime)
-        {
+        while (Vector3.Distance(transform.position, randomTarget) > 0.1f) {
             Vector2 targetPos = Vector2.SmoothDamp(rb.position, randomTarget, ref velocity, smoothTime, speed * Time.deltaTime);
             rb.MovePosition(targetPos);
 
-            NpcAnimation();
+            isNpcMove = true;
 
-            timer += Time.deltaTime;
             yield return null;
         }
-        StartCoroutine(PauseAtRandom());
+        StartCoroutine(idleAtRandom());
     }
 
-    private IEnumerator MoveToSpawn()
-    {
-        while (Vector3.Distance(transform.position, spawnPosition) > 0.1f)
-        {
+    private IEnumerator MoveToSpawn() {
+        while (Vector3.Distance(transform.position, spawnPosition) > 0.1f) {
             Vector2 targetPos = Vector2.SmoothDamp(rb.position, spawnPosition, ref velocity, smoothTime, speed * Time.deltaTime);
             rb.MovePosition(targetPos);
 
-            NpcAnimation();
+            isNpcMove = true;
 
             yield return null;
         }
 
         Destroy(gameObject); // Menghancurkan NPC setelah kembali ke posisi awal
-    }
-
-    private void OnDestroy()
-    {
-        // Bersihkan jika diperlukan
+        PersistentManager.Instance.dataTotalSpawnNpc--;
     }
 }

@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 3000, y: 270}
+  m_AnchoredPosition: {x: 330, y: 144}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6175119883130181096
@@ -115,7 +115,7 @@ GameObject:
   - component: {fileID: 6923942948330086099}
   - component: {fileID: 3062732328825434746}
   m_Layer: 5
-  m_Name: ButtonRestokUI
+  m_Name: ButtonOpenRestok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,8 +137,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 200, y: 90}
+  m_SizeDelta: {x: 220, y: 222}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9102776736936732092
 CanvasRenderer:
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cdfab03f6270dc54e99e7482ed653bb2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 71707578cdd57ef479923fd5f5a81bc9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -232,9 +232,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7239648130284142105}
   - component: {fileID: 8543983348158334812}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: MobilBakGFX
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -249,7 +249,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5401398849697266443}
@@ -295,9 +295,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 26390ed09c7d7da41ad6e446ef9a2d1b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8226793ed415492458bc123bb80a7daa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 800, y: 300}
@@ -316,7 +316,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5401398849697266443}
   - component: {fileID: 1316894485512809403}
-  m_Layer: 0
+  - component: {fileID: 6640904035397722623}
+  m_Layer: 3
   m_Name: MobilBak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,10 +357,55 @@ MonoBehaviour:
   targetPosition: {fileID: 0}
   speed: 2000
   smoothTime: 0.5
-  restokCanvas: {fileID: 0}
-  buttonRestok: {fileID: 3062732328825434746}
-  restokWindow: {fileID: 0}
+  restokCanvas: {fileID: 6175119883130181096}
+  buttonOpenRestok: {fileID: 3062732328825434746}
+  restokUI: {fileID: 0}
   buttonCloseRestok: {fileID: 0}
+--- !u!61 &6640904035397722623
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8004722366459209674}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 173.7}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1400, y: 300}
+  m_EdgeRadius: 0
 --- !u!1 &8549886449552338006
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,7 +419,7 @@ GameObject:
   - component: {fileID: 8672840107751095018}
   m_Layer: 0
   m_Name: TriggerRestok
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -387,7 +433,7 @@ Transform:
   m_GameObject: {fileID: 8549886449552338006}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 159, z: 0}
+  m_LocalPosition: {x: 0, y: 465, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -436,7 +482,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 500, y: 200}
+  m_Size: {x: 1400, y: 300}
   m_EdgeRadius: 0
 --- !u!114 &8672840107751095018
 MonoBehaviour:

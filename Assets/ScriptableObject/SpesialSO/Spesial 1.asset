@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8041948e4e1604595cd1d22a0ee0b7, type: 3}
   m_Name: Spesial 1
   m_EditorClassIdentifier: 
-  spesialName: 
-  spesialPrice: 2000
-  spesialPrefab: {fileID: 52655213423599539, guid: cb54f2e0da1a6674ab0977c9b3010fa7, type: 3}
-  spesialConstructionPrefab: {fileID: 52655213423599539, guid: 321215803d023284baf3542adda872e5, type: 3}
-  spesialButton: {fileID: 1043237798, guid: 0c5ce4e00fe73a446aaeb8b5b4aea958, type: 3}
-  selectedSpesialButton: {fileID: 1471827041, guid: 0c5ce4e00fe73a446aaeb8b5b4aea958, type: 3}
-  spesialWindow: {fileID: 21300000, guid: bfbf14616cd47ef41b5c338c69514e85, type: 3}
-  spesialCursor: {fileID: 4971749641683560797, guid: 126eff9964defb743995616daabc8e68, type: 3}
-  spesialPlacementPrefab: {fileID: 52655213423599539, guid: 3f0f739aeee40614e9b7cc70efac5c24, type: 3}
+  spesialName: Proyek Besar
+  spesialPrice: 0
+  spesialPrefab: {fileID: 5331294723538348162, guid: 8c73d528e0ccdaf49a79332129e66784, type: 3}
+  spesialConstructionPrefab: {fileID: 5331294723538348162, guid: f68ba7054c4f5af42b31b44b74ea1129, type: 3}
+  spesialButton: {fileID: 21300000, guid: cce38ba82990df34c9a8ee419733292b, type: 3}
+  selectedSpesialButton: {fileID: 21300000, guid: 9f55b144609bae04ebd4a33b4268dbeb, type: 3}
+  spesialWindow: {fileID: 21300000, guid: 8bc624f252cc25549a02823bb4b2e632, type: 3}
+  spesialCursor: {fileID: 8090969576927368307, guid: 03b8af357fbc06c48911d65e7cea7b8f, type: 3}
+  spesialPlacementPrefab: {fileID: 6384518165722326447, guid: 1b9c89647c7c50546bc1e8f534bb627e, type: 3}

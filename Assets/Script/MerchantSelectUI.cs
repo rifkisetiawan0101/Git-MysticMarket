@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,11 +6,9 @@ using UnityEngine.UI;
 
 public class MerchantSelectUI : MonoBehaviour {
     [SerializeField] private List<MerchantTypeSO> merchantTypeSOList;
-    [SerializeField] private List<MerchantTerkunciSO> merchantTerkunciSOList;
     [SerializeField] private MerchantManager merchantManager;
     
     private List<Transform> merchantButtonList;
-    private List<Transform> merchantBtnTerkunciList;
     private RectTransform rectTransform;
     public GameObject cursorInstance; // Instance dari prefab kursor
 
@@ -18,12 +17,7 @@ public class MerchantSelectUI : MonoBehaviour {
         merchantBtnTemplate.gameObject.SetActive(false);
         merchantButtonList = new List<Transform>();
 
-        Transform merchantBtnTerkunci = transform.Find("MerchantBtnTerkunci");
-        merchantBtnTerkunci.gameObject.SetActive(false);
-        merchantBtnTerkunciList = new List<Transform>();
-
         int index = 0;
-        int indexTerkunci = 3; 
 
         foreach (MerchantTypeSO merchantTypeSO in merchantTypeSOList) {
             Transform merchantBtnTransform = Instantiate(merchantBtnTemplate, transform);
@@ -38,28 +32,21 @@ public class MerchantSelectUI : MonoBehaviour {
                     DestroyCursorMerchant(); // Hapus kursor jika merchantTypeSO diaktifkan/dinonaktifkan
                     StartCoroutine (merchantManager.ActivateIsMerchantPlaced(0.5f));
                     merchantManager.DestroyPlacementInstance();
+                    
+                    UIManager.Instance.ActivateUI();
                 } else {
                     merchantManager.SetActiveMerchantType(merchantTypeSO);
                     SetCursor(merchantTypeSO.merchantCursor); // Atur kursor saat merchant dipilih
                     StartCoroutine (merchantManager.DeactivateIsMerchantPlaced(0.5f));
                     merchantManager.DestroyPlacementInstance();
+
+                    UIManager.Instance.DeactivateUI();
                 }
                 UpdateSelectedVisual();
             });
             merchantButtonList.Add(merchantBtnTransform);
 
             index++;
-        }
-
-        foreach (MerchantTerkunciSO merchantTerkunciSO in merchantTerkunciSOList) {
-            Transform merchantBtnTransformTerkunci = Instantiate(merchantBtnTerkunci, transform);
-            merchantBtnTransformTerkunci.gameObject.SetActive(true);
-
-            merchantBtnTransformTerkunci.GetComponent<RectTransform>().anchoredPosition += new Vector2(indexTerkunci * 115, 0);
-            merchantBtnTransformTerkunci.Find("Image").GetComponent<Image>().sprite = merchantTerkunciSO.merchantTerkunciButton;
-            merchantBtnTerkunciList.Add(merchantBtnTransformTerkunci);
-
-            indexTerkunci++;
         }
 
         rectTransform = GetComponent<RectTransform>();

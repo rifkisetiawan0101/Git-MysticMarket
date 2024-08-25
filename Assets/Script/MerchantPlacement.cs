@@ -6,7 +6,17 @@ public class MerchantPlacement : MonoBehaviour {
     private MerchantManager merchantManager;
     private Vector3 placementPosition;
 
-    private void Start() {
+    public void Setup(Vector3 position, MerchantManager manager) {
+        placementPosition = position;
+        merchantManager = manager;
+
+        // Menemukan tombol dan menambahkan listener
+        Button buttonAccept = transform.Find("Canvas/ButtonAccept").GetComponent<Button>();
+        Button buttonCancel = transform.Find("Canvas/ButtonCancel").GetComponent<Button>();
+
+        buttonAccept.onClick.AddListener(() => AcceptButtonPlacement());
+        buttonCancel.onClick.AddListener(() => CancelButtonPlacement());
+
         Button buttonFurnitur = GameObject.Find("ButtonFurnitur").GetComponent<Button>(); 
         buttonFurnitur.onClick.AddListener(() => {
             merchantManager.CancelPlacement();
@@ -19,17 +29,6 @@ public class MerchantPlacement : MonoBehaviour {
             Destroy(gameObject);
         });
     }
-    public void Setup(Vector3 position, MerchantManager manager) {
-        placementPosition = position;
-        merchantManager = manager;
-
-        // Menemukan tombol dan menambahkan listener
-        Button buttonAccept = transform.Find("Canvas/ButtonAccept").GetComponent<Button>();
-        Button buttonCancel = transform.Find("Canvas/ButtonCancel").GetComponent<Button>();
-
-        buttonAccept.onClick.AddListener(() => AcceptButtonPlacement());
-        buttonCancel.onClick.AddListener(() => CancelButtonPlacement());
-    }
 
     private void AcceptButtonPlacement() {
         // Panggil MerchantPlacing di MerchantManager
@@ -41,8 +40,4 @@ public class MerchantPlacement : MonoBehaviour {
         merchantManager.CancelPlacement(); // Reset status placement di MerchantManager
         Destroy(gameObject); // Menghancurkan prefab placement jika dibatalkan
     } 
-
-    private void RotateButtonPlacement() {
-        
-    }
 }

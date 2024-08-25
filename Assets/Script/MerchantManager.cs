@@ -1,46 +1,29 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using CodeMonkey.Utils;
-using Unity.Mathematics;
-using UnityEngine.UI;
-// using System.Diagnostics;
 
 public class MerchantManager : MonoBehaviour {
+    public static MerchantManager Instance { get; private set; }
+
     [SerializeField] private MerchantTypeSO activeMerchantType;
+    [SerializeField] private MerchantTerkunciSO activeTerkunci;
     [SerializeField] private LayerMask ignoreLayerMask;
 
     private MerchantSelectUI merchantSelectUI;
     private bool isPlacingMerchant = false;
     public bool isMerchantPlaced = true;
 
-    private GridXY<GridObject> grid;
-    private int cellSize = 60;
+    [SerializeField] private GameObject LessKoinNotif;
+    [SerializeField] private GameObject LahanBurukNotif;
+
     private void Awake() {
-        int gridWidth = 6000 / cellSize;
-        int gridHeight = 6000 / cellSize;
-        grid = new GridXY<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (GridXY<GridObject> g, int x, int y) => new GridObject(g, x, y));
-        targetMerchantNPCList = new List<Vector3>();
-    }
-
-    public class GridObject {
-
-        private GridXY<GridObject> grid;
-        private int x;
-        private int y;
-
-        public GridObject(GridXY<GridObject> grid, int x, int y) {
-            this.grid = grid;
-            this.x = x;
-            this.y = y;
-        }
-
-        //Debug untuk menampilkan koordinat
-        public override string ToString()
-        {
-            return x + ", " + y;
+        if (Instance == null) {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Jangan hancurkan saat berpindah scene
+        } else {
+            Destroy(gameObject); // Hancurkan jika instance sudah ada
         }
     }
 
@@ -50,17 +33,24 @@ public class MerchantManager : MonoBehaviour {
             Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
             if (CanSpawnMerchant(activeMerchantType, mouseWorldPosition)) {
                 PlacementInstance();
+                UIManager.Instance.DeactivateUI();
+            } else if (LessKoin(activeMerchantType)) {
+                StartCoroutine(PlayLessKoin());
+                UIManager.Instance.ActivateUI();
+            } else if (LahanBuruk(activeMerchantType, mouseWorldPosition)) {
+                StartCoroutine(PlayLahanBuruk());
+                UIManager.Instance.ActivateUI();
             }
         }
+
         merchantSelectUI = FindObjectOfType<MerchantSelectUI>();
     }
 
     private Transform placementInstance;
-
     private void PlacementInstance() {
         Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
-        grid.GetXY(mouseWorldPosition, out int x, out int y);
-        Vector3 spawnPosition = grid.GetWorldPosition(x, y) + new Vector3(cellSize, cellSize, 0) * 0.5f;
+
+        Vector3 spawnPosition = mouseWorldPosition;
         placementInstance = Instantiate(activeMerchantType.merchantPlacementPrefab, spawnPosition, Quaternion.identity);
 
         // Set status isPlacingMerchant menjadi true setelah memanggil placement
@@ -82,35 +72,66 @@ public class MerchantManager : MonoBehaviour {
         }
     }
 
-    public static event Action OnTotalMerchantChanged;
-    public static int totalMerchant = 0;
-    // public bool isHaveMerchant = false;
-    public List<Vector3>targetMerchantNPCList;
     [SerializeField] GameObject kunchanSpawner;
     [SerializeField] GameObject pocinSpawner;
     [SerializeField] GameObject ayangSpawner;
-    public void MerchantPlacing(Vector3 position) {
+    [SerializeField] GameObject utoSpawner;
+    private int merchantIndex = -1;
+
+    public void MerchantPlacing(Vector3 position) {  
         Instantiate(activeMerchantType.merchantConstructionPrefab, position, Quaternion.identity);
 
         PersistentManager.Instance.UpdateKoin(-activeMerchantType.merchantPrice);
-        SetActiveMerchantType(null); // Reset activeMerchantType setelah menaruh merchant
-        OnMerchantPlaced?.Invoke(); // Panggil event ketika merchant ditempatkan
-        isPlacingMerchant = false; // Reset status placement
-        totalMerchant += 1;
-        Debug.Log ("Total Merchant " + totalMerchant);
-        OnTotalMerchantChanged?.Invoke();
 
-        targetMerchantNPCList.Add(position);
-        Debug.Log("Posisi merchant ditambahkan: " + position);
-        Debug.Log("Daftar semua posisi merchant: " + string.Join(", ", targetMerchantNPCList));
+        merchantIndex++;
+        
+        PersistentManager.MerchantData newMerchantData = new PersistentManager.MerchantData {
+            merchantTypeSO = activeMerchantType, // Atur merchantTypeSO
+            merchantPosition = position
+        };
+
+        HandleJuraganPasarEvent();
+
+        PersistentManager.Instance.dataMerchantList.Add(newMerchantData);        
+
         pocinSpawner.SetActive(true);
         kunchanSpawner.SetActive(true);
         ayangSpawner.SetActive(true);
+        utoSpawner.SetActive(true);
+
+        SetActiveMerchantType(null);
+        OnMerchantPlaced?.Invoke(); // Panggil event ketika merchant ditempatkan
+        isPlacingMerchant = false; // Reset status placement
+        PersistentManager.Instance.UpdateTotalMerchant(1f);
+        PersistentManager.Instance.UpdateTotalNpc(3f);
+
+        UIManager.Instance.ActivateUI();
+    }
+
+    public int GetCurrentMerchantIndex() {
+        return merchantIndex;
+    }
+
+    public static event Action OnJuraganPasar;
+    public void HandleJuraganPasarEvent() {
+        if (activeMerchantType.merchantName == "Pedagang Sayur") {
+            PersistentManager.Instance.isSayurPlaced = true;
+        }
+
+        if (activeMerchantType.merchantName == "Pemasok Rempah") {
+            PersistentManager.Instance.isRempahPlaced = true;
+        }
+
+        if (activeMerchantType.merchantName == "Penjual Daging") {
+            PersistentManager.Instance.isDagingPlaced = true;
+        }
+        OnJuraganPasar?.Invoke();
     }
 
     public void CancelPlacement() {
         SetActiveMerchantType(null);
         isPlacingMerchant = false; // Reset status placement jika dibatalkan
+        UIManager.Instance.ActivateUI();
     }
 
     public void SetActiveMerchantType(MerchantTypeSO merchantTypeSO) {
@@ -121,12 +142,20 @@ public class MerchantManager : MonoBehaviour {
         return activeMerchantType;
     }
 
+    public void SetActiveTerkunci(MerchantTerkunciSO merchantTerkunciSO) {
+        activeTerkunci = merchantTerkunciSO;
+    }
+
+    public MerchantTerkunciSO GetActiveTerkunci() {
+        return activeTerkunci;
+    }
+
     private bool CanSpawnMerchant(MerchantTypeSO merchantTypeSO, Vector3 position) {
         if (activeMerchantType == null) {
             return false;
         }
 
-        if (PersistentManager.Instance.Koins < merchantTypeSO.merchantPrice) {
+        if (PersistentManager.Instance.dataKoin < merchantTypeSO.merchantPrice) {
             return false;
         }
 
@@ -148,6 +177,46 @@ public class MerchantManager : MonoBehaviour {
         }
 
         return true;
+    }
+
+    private bool LessKoin(MerchantTypeSO merchantTypeSO) {
+        if (PersistentManager.Instance.dataKoin < merchantTypeSO.merchantPrice) {
+            return true;
+        }
+        return false;
+    }
+
+    private IEnumerator PlayLessKoin() {
+        LessKoinNotif.SetActive(true);
+        SetActiveMerchantType(null);
+        Destroy(merchantSelectUI.cursorInstance);
+        yield return new WaitForSeconds(1.277f);
+        isMerchantPlaced = true;
+        LessKoinNotif.SetActive(false);
+    }
+
+    private bool LahanBuruk(MerchantTypeSO merchantTypeSO, Vector3 position) {
+        PolygonCollider2D merchantCollider = merchantTypeSO.merchantPrefab.GetComponent<PolygonCollider2D>();
+
+        Vector2[] worldSpacePoints = new Vector2[merchantCollider.points.Length];
+
+        for (int i = 0; i < merchantCollider.points.Length; i++) {
+            worldSpacePoints[i] = (Vector2)position + merchantCollider.points[i];
+        
+            if (Physics2D.OverlapPoint(worldSpacePoints[i], ~ignoreLayerMask) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private IEnumerator PlayLahanBuruk() {
+        LahanBurukNotif.SetActive(true);
+        SetActiveMerchantType(null);
+        Destroy(merchantSelectUI.cursorInstance);
+        yield return new WaitForSeconds(1.277f);
+        isMerchantPlaced = true;
+        LahanBurukNotif.SetActive(false);
     }
 
     public IEnumerator ActivateIsMerchantPlaced(float delay) {
